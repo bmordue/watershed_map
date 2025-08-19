@@ -4,118 +4,31 @@ pkgs.mkShell {
   name = "watershed-mapping-env";
   
   buildInputs = with pkgs; [
-    # Core GIS Analysis Tools
+    # Core GIS Analysis Tools (used in scripts)
     grass
     gdal
-    saga
-    whitebox-tools
-    
-    # Spatial Database
-    postgis
-    postgresql
-    
-    # Cartography and Visualization
     gmt
     qgis
-    inkscape
-    imagemagick
     
     # Programming Languages and Core Tools
     python3
     python3Packages.pip
-    python3Packages.virtualenv
- #   R
     
-    # Essential Python Geospatial Packages
+    # Essential Python Geospatial Packages (used in scripts)
     python3Packages.geopandas
     python3Packages.rasterio
     python3Packages.shapely
     python3Packages.fiona
     python3Packages.pyproj
-    python3Packages.matplotlib
     python3Packages.numpy
-    python3Packages.pandas
-    python3Packages.scipy
-    python3Packages.pillow
-    python3Packages.requests
-    python3Packages.beautifulsoup4
     
-    # Additional Python packages for spatial analysis
-    python3Packages.folium
-    python3Packages.contextily
-    python3Packages.xarray
-    python3Packages.netcdf4
-    python3Packages.h5py
-    
-    # R Spatial Packages (using rWrapper for package management)
- #   (rWrapper.override {
- #     packages = with rPackages; [
- #       sf
- #       raster
- #       terra
- #       stars
- #       tmap
- #       ggplot2
- #       dplyr
- #       tidyr
- #       leaflet
- #       mapview
- #       rgdal
- #       sp
- #       rgeos
- #       rasterVis
- #       RColorBrewer
- #       viridis
- #       plotly
- #       htmlwidgets
- #       knitr
- #       rmarkdown
- #     ];
- #   })
-    
-    # Command Line Tools
-#    curl
-#    wget
-#    unzip
-#    git
-#    gnumake
-#    which
-#    file
-#    tree
-    
-    # OSM Tools
+    # Data Acquisition Tools
+    wget
     osmium-tool
-    osmctools
     
-    # Additional Geospatial Utilities
+    # Required system libraries (dependencies)
     proj
-    geos
-    sqlite
-    spatialite-tools
-    
-    # Development and Documentation
-    pandoc
-    texlive.combined.scheme-medium
-    gh
-    
-    # Shell utilities
-#    bash
-#    coreutils
-#    findutils
-#    gnugrep
-#    gnused
-#    gawk
 
-    # AAaaa IIiiii
-    gemini-cli
-    claude-code
-
-  ];
-
-  # Python packages that might not be available in nixpkgs
-  pythonPackages = ps: with ps; [
-    # rasterstats for zonal statistics
-    # Note: Some packages might need to be installed via pip in shellHook
   ];
 
   # Environment variables
@@ -126,12 +39,6 @@ pkgs.mkShell {
     
     # GMT defaults
     export GMT_SESSION_NAME=$$
-    
-    # PostGIS setup (optional)
-    export PGDATA=$PWD/.postgres
-    export PGHOST=$PWD/.postgres
-    export PGPORT=5432
-    export PGDATABASE=gis
     
     # Python virtual environment for additional packages
     export VENV_DIR="$PWD/.venv"
@@ -146,25 +53,7 @@ pkgs.mkShell {
     source "$VENV_DIR/bin/activate"
     
     # Install additional Python packages not available in nixpkgs
-    pip install --quiet \
-      rasterstats \
-      whitebox \
-      elevation \
-      pysheds \
-      richdem \
-      salem \
-      cartopy \
-      descartes \
-      geoplot \
-      osmnx \
-      earthpy \
-      pycrs \
-      geocoder \
-      geopy \
-      owslib \
-      requests-oauthlib
-    
-    # R library path (libraries will be available automatically)
+    pip install --quiet rasterstats
     
     # GRASS GIS setup
     echo "Setting up GRASS GIS environment..."
@@ -175,28 +64,12 @@ pkgs.mkShell {
       export PYTHONPATH="$GISBASE/etc/python:$PYTHONPATH"
     fi
     
-    # SAGA setup
-    export SAGA_MLB=$(saga_cmd --version 2>&1 | grep "library path" | cut -d: -f2 | tr -d ' ' || echo "")
-    
     # GDAL configuration
     export GDAL_DATA=${pkgs.gdal}/share/gdal
     export PROJ_LIB=${pkgs.proj}/share/proj
     
     # Create project directories
     mkdir -p data/{raw,processed} output scripts grassdb
-    
-    # Initialize PostGIS database (optional)
-    init_postgis() {
-      if [ ! -d "$PGDATA" ]; then
-        echo "Initializing PostgreSQL database..."
-        initdb -D "$PGDATA" --auth=trust >/dev/null
-        pg_ctl -D "$PGDATA" -l "$PGDATA/logfile" start
-        createdb "$PGDATABASE"
-        psql -d "$PGDATABASE" -c "CREATE EXTENSION postgis;"
-        psql -d "$PGDATABASE" -c "CREATE EXTENSION postgis_topology;"
-        echo "PostGIS database initialized. Connect with: psql -d $PGDATABASE"
-      fi
-    }
     
     # Helper functions
     setup_grass_location() {
@@ -218,17 +91,15 @@ pkgs.mkShell {
     
     ╔══════════════════════════════════════════════════════════════════════════════╗
     ║                    Watershed Mapping Environment                             ║
-    ║                        FOSS Tools Available                                  ║
+    ║                      Required Tools for Scripts                              ║
     ╠══════════════════════════════════════════════════════════════════════════════╣
     ║                                                                              ║
-    ║  GIS Analysis:  GRASS GIS, GDAL, SAGA, WhiteboxTools, PostGIS               ║
-    ║  Cartography:   GMT, QGIS, Inkscape                                         ║
-    ║  Languages:     Python (with geospatial packages), R (with spatial libs)   ║
-    ║  Data Tools:    OSM tools, spatial utilities                                ║
+    ║  GIS Analysis:  GRASS GIS, GDAL, GMT, QGIS                                  ║
+    ║  Languages:     Python3 (with geospatial packages)                          ║
+    ║  Data Tools:    wget, osmium-tool                                           ║
     ║                                                                              ║
     ║  Helper Commands:                                                            ║
     ║    setup_grass_location <name> <epsg>  - Create GRASS location              ║
-    ║    init_postgis                        - Initialize PostGIS database        ║
     ║                                                                              ║
     ║  Quick Start:                                                                ║
     ║    setup_grass_location aberdeenshire_bng 27700                             ║
@@ -240,7 +111,7 @@ EOF
     
     # Check that key tools are available
     echo "Checking tool availability..."
-    for tool in grass gdal_translate gmt saga_cmd python3 R; do
+    for tool in grass gdal_translate gmt python3 wget osmium; do
       if command -v $tool >/dev/null 2>&1; then
         echo "  ✓ $tool"
       else
@@ -252,7 +123,7 @@ EOF
     echo "Checking Python geospatial packages..."
     python3 -c "
 import sys
-packages = ['geopandas', 'rasterio', 'fiona', 'shapely', 'pyproj', 'matplotlib', 'rasterstats']
+packages = ['geopandas', 'rasterio', 'fiona', 'shapely', 'pyproj', 'numpy', 'rasterstats']
 for pkg in packages:
     try:
         __import__(pkg)
