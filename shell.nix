@@ -24,7 +24,7 @@ pkgs.mkShell {
     python3
     python3Packages.pip
     python3Packages.virtualenv
-    R
+ #   R
     
     # Essential Python Geospatial Packages
     python3Packages.geopandas
@@ -48,40 +48,40 @@ pkgs.mkShell {
     python3Packages.h5py
     
     # R Spatial Packages (using rWrapper for package management)
-    (rWrapper.override {
-      packages = with rPackages; [
-        sf
-        raster
-        terra
-        stars
-        tmap
-        ggplot2
-        dplyr
-        tidyr
-        leaflet
-        mapview
-        rgdal
-        sp
-        rgeos
-        rasterVis
-        RColorBrewer
-        viridis
-        plotly
-        htmlwidgets
-        knitr
-        rmarkdown
-      ];
-    })
+ #   (rWrapper.override {
+ #     packages = with rPackages; [
+ #       sf
+ #       raster
+ #       terra
+ #       stars
+ #       tmap
+ #       ggplot2
+ #       dplyr
+ #       tidyr
+ #       leaflet
+ #       mapview
+ #       rgdal
+ #       sp
+ #       rgeos
+ #       rasterVis
+ #       RColorBrewer
+ #       viridis
+ #       plotly
+ #       htmlwidgets
+ #       knitr
+ #       rmarkdown
+ #     ];
+ #   })
     
     # Command Line Tools
-    curl
-    wget
-    unzip
-    git
-    gnumake
-    which
-    file
-    tree
+#    curl
+#    wget
+#    unzip
+#    git
+#    gnumake
+#    which
+#    file
+#    tree
     
     # OSM Tools
     osmium-tool
@@ -96,18 +96,15 @@ pkgs.mkShell {
     # Development and Documentation
     pandoc
     texlive.combined.scheme-medium
-    
-    # Optional: Docker for containerization
-    docker
-    docker-compose
+    gh
     
     # Shell utilities
-    bash
-    coreutils
-    findutils
-    gnugrep
-    gnused
-    gawk
+#    bash
+#    coreutils
+#    findutils
+#    gnugrep
+#    gnused
+#    gawk
 
     # AAaaa IIiiii
     gemini-cli
