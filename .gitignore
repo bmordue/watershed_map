@@ -1,0 +1,35 @@
+# GRASS GIS database (can be regenerated)
+grassdb/
+
+# Data directories (large files, can be downloaded)
+data/
+output/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# GMT temporary files
+gmt.conf
+gmt.history
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
