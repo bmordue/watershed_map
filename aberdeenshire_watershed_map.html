@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aberdeenshire Watershed Map</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .map-container {
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        #map {
+            width: 100%;
+            height: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(180deg, #e3f2fd 0%, #f0f7ff 100%);
+        }
+        
+        .watershed {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 10px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .watershed:hover {
+            opacity: 1;
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .watershed-label {
+            position: absolute;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        
+        .river {
+            position: absolute;
+            background: #1976d2;
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+        
+        .river::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid #1976d2;
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .legend-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s ease;
+        }
+        
+        .legend-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .info-panel {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .info-panel h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .watershed-info {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn.active {
+            background: #e74c3c;
+        }
+        
+        /* Watershed colors */
+        .dee { background: rgba(231, 76, 60, 0.3); border-color: #e74c3c; }
+        .don { background: rgba(52, 152, 219, 0.3); border-color: #3498db; }
+        .ythan { background: rgba(46, 204, 113, 0.3); border-color: #2ecc71; }
+        .ugie { background: rgba(155, 89, 182, 0.3); border-color: #9b59b6; }
+        .deveron { background: rgba(230, 126, 34, 0.3); border-color: #e67e22; }
+        .spey { background: rgba(241, 196, 15, 0.3); border-color: #f1c40f; }
+        .coastal { background: rgba(149, 165, 166, 0.3); border-color: #95a5a6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aberdeenshire Watershed Map</h1>
+        <p class="subtitle">Major River Basins and Drainage Systems</p>
+        
+        <div class="controls">
+            <button class="btn" onclick="toggleView('watersheds')">Watersheds</button>
+            <button class="btn" onclick="toggleView('rivers')">Rivers</button>
+            <button class="btn active" onclick="toggleView('both')">Both</button>
+            <button class="btn" onclick="resetView()">Reset View</button>
+        </div>
+        
+        <div class="map-container">
+            <div id="map">
+                <!-- River Dee Watershed -->
+                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee">
+                    <div class="watershed-label" style="left: 50%; top: 30%; color: #c0392b;">River Dee Basin</div>
+                </div>
+                
+                <!-- River Don Watershed -->
+                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don">
+                    <div class="watershed-label" style="left: 50%; top: 50%; color: #2980b9;">River Don Basin</div>
+                </div>
+                
+                <!-- River Ythan Watershed -->
+                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan">
+                    <div class="watershed-label" style="left: 50%; top: 60%; color: #27ae60;">River Ythan Basin</div>
+                </div>
+                
+                <!-- River Ugie Watershed -->
+                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie">
+                    <div class="watershed-label" style="left: 50%; top: 70%; color: #8e44ad;">River Ugie Basin</div>
+                </div>
+                
+                <!-- River Deveron Watershed -->
+                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron">
+                    <div class="watershed-label" style="left: 60%; top: 70%; color: #d35400;">River Deveron Basin</div>
+                </div>
+                
+                <!-- River Spey Watershed (partial) -->
+                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey">
+                    <div class="watershed-label" style="left: 70%; top: 50%; color: #f39c12;">Spey Basin (partial)</div>
+                </div>
+                
+                <!-- Coastal Watersheds -->
+                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal">
+                    <div class="watershed-label" style="left: 50%; top: 50%; color: #7f8c8d;">Coastal Streams</div>
+                </div>
+                
+                <!-- Rivers -->
+                <div class="river" style="left: 20%; top: 62%; width: 30%; height: 3px; transform: rotate(-15deg);"></div>
+                <div class="river" style="left: 30%; top: 37%; width: 25%; height: 3px; transform: rotate(20deg);"></div>
+                <div class="river" style="left: 50%; top: 30%; width: 20%; height: 3px; transform: rotate(45deg);"></div>
+                <div class="river" style="left: 70%; top: 18%; width: 20%; height: 3px; transform: rotate(60deg);"></div>
+                <div class="river" style="left: 15%; top: 18%; width: 30%; height: 3px; transform: rotate(35deg);"></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-section">
+                <h3>Major Watersheds</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(231, 76, 60, 0.3); border-color: #e74c3c;"></div>
+                    <span><strong>River Dee Basin</strong> - Largest watershed, flows east to Aberdeen</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(52, 152, 219, 0.3); border-color: #3498db;"></div>
+                    <span><strong>River Don Basin</strong> - Second largest, flows northeast</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(46, 204, 113, 0.3); border-color: #2ecc71;"></div>
+                    <span><strong>River Ythan Basin</strong> - Flows east through agricultural land</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(155, 89, 182, 0.3); border-color: #9b59b6;"></div>
+                    <span><strong>River Ugie Basin</strong> - Northeast coastal drainage</span>
+                </div>
+            </div>
+            
+            <div class="legend-section">
+                <h3>Additional Basins</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(230, 126, 34, 0.3); border-color: #e67e22;"></div>
+                    <span><strong>River Deveron Basin</strong> - Northwest drainage to Moray Firth</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(241, 196, 15, 0.3); border-color: #f1c40f;"></div>
+                    <span><strong>Spey Basin (partial)</strong> - Western edge watershed</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(149, 165, 166, 0.3); border-color: #95a5a6;"></div>
+                    <span><strong>Coastal Streams</strong> - Small direct-to-sea drainage</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #1976d2;"></div>
+                    <span><strong>Major Rivers</strong> - Primary watercourses</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>Watershed Information</h3>
+            <div id="general-info">
+                <p>Click on a watershed above to learn more about its characteristics, drainage patterns, and key features.</p>
+                <p><strong>Aberdeenshire</strong> is drained by several major river systems that flow from the Cairngorms and other highland areas eastward to the North Sea, with some northern areas draining to the Moray Firth.</p>
+            </div>
+            
+            <div id="dee-info" class="watershed-info">
+                <h4>River Dee Watershed</h4>
+                <p><strong>Area:</strong> ~2,100 km² (largest in Aberdeenshire)</p>
+                <p><strong>Length:</strong> 96 miles (155 km)</p>
+                <p><strong>Source:</strong> Cairngorms National Park (Braeriach)</p>
+                <p><strong>Mouth:</strong> North Sea at Aberdeen</p>
+                <p><strong>Key Features:</strong> Royal Deeside, Balmoral Castle, important salmon river, hydroelectric power generation</p>
+                <p><strong>Tributaries:</strong> River Muick, Water of Tanar, River Feugh</p>
+            </div>
+            
+            <div id="don-info" class="watershed-info">
+                <h4>River Don Watershed</h4>
+                <p><strong>Area:</strong> ~1,320 km²</p>
+                <p><strong>Length:</strong> 82 miles (132 km)</p>
+                <p><strong>Source:</strong> Cairngorms (Cock Bridge)</p>
+                <p><strong>Mouth:</strong> North Sea north of Aberdeen</p>
+                <p><strong>Key Features:</strong> Historic castles, agricultural valley, important for water supply</p>
+                <p><strong>Tributaries:</strong> River Ury, Gadie Burn, River Bogie</p>
+            </div>
+            
+            <div id="ythan-info" class="watershed-info">
+                <h4>River Ythan Watershed</h4>
+                <p><strong>Area:</strong> ~690 km²</p>
+                <p><strong>Length:</strong> 38 miles (61 km)</p>
+                <p><strong>Source:</strong> Wells of Ythan</p>
+                <p><strong>Mouth:</strong> Ythan Estuary at Newburgh</p>
+                <p><strong>Key Features:</strong> Rich agricultural valley, important bird habitat, sand dune systems</p>
+                <p><strong>Tributaries:</strong> Ebrie Burn, Tarty Burn</p>
+            </div>
+            
+            <div id="ugie-info" class="watershed-info">
+                <h4>River Ugie Watershed</h4>
+                <p><strong>Area:</strong> ~325 km²</p>
+                <p><strong>Length:</strong> 20 miles (32 km)</p>
+                <p><strong>Source:</strong> Longman Hill</p>
+                <p><strong>Mouth:</strong> North Sea at Peterhead</p>
+                <p><strong>Key Features:</strong> Coastal plain drainage, fishing heritage, important for local water supply</p>
+                <p><strong>Tributaries:</strong> South Ugie Water</p>
+            </div>
+            
+            <div id="deveron-info" class="watershed-info">
+                <h4>River Deveron Watershed</h4>
+                <p><strong>Area:</strong> ~1,030 km²</p>
+                <p><strong>Length:</strong> 62 miles (100 km)</p>
+                <p><strong>Source:</strong> Cabrach</p>
+                <p><strong>Mouth:</strong> Moray Firth at Banff</p>
+                <p><strong>Key Features:</strong> Famous salmon fishing, whisky distilleries, scenic valley</p>
+                <p><strong>Tributaries:</strong> River Bogie, Isla Burn</p>
+            </div>
+            
+            <div id="spey-info" class="watershed-info">
+                <h4>Spey Basin (Partial)</h4>
+                <p><strong>Note:</strong> Only western Aberdeenshire drains to the Spey</p>
+                <p><strong>Total Basin Area:</strong> ~3,000 km² (Scotland's second longest river)</p>
+                <p><strong>Key Features:</strong> Speyside whisky region, important salmon river</p>
+                <p><strong>Aberdeenshire Contribution:</strong> Upper catchment tributaries</p>
+            </div>
+            
+            <div id="coastal-info" class="watershed-info">
+                <h4>Coastal Watersheds</h4>
+                <p><strong>Area:</strong> Various small basins</p>
+                <p><strong>Features:</strong> Short, steep streams flowing directly to North Sea</p>
+                <p><strong>Key Characteristics:</strong> Rapid drainage, important for local communities</p>
+                <p><strong>Examples:</strong> Burn of Muchalls, Carron Water, various coastal burns</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'both';
+        
+        function showWatershedInfo(watershed) {
+            // Hide all watershed info
+            const allInfo = document.querySelectorAll('.watershed-info');
+            allInfo.forEach(info => info.style.display = 'none');
+            
+            // Hide general info
+            document.getElementById('general-info').style.display = 'none';
+            
+            // Show selected watershed info
+            const targetInfo = document.getElementById(watershed + '-info');
+            if (targetInfo) {
+                targetInfo.style.display = 'block';
+            }
+        }
+        
+        function resetInfo() {
+            // Hide all watershed info
+            const allInfo = document.querySelectorAll('.watershed-info');
+            allInfo.forEach(info => info.style.display = 'none');
+            
+            // Show general info
+            document.getElementById('general-info').style.display = 'block';
+        }
+        
+        function toggleView(viewType) {
+            currentView = viewType;
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const watersheds = document.querySelectorAll('.watershed');
+            const rivers = document.querySelectorAll('.river');
+            
+            switch(viewType) {
+                case 'watersheds':
+                    watersheds.forEach(w => w.style.display = 'block');
+                    rivers.forEach(r => r.style.display = 'none');
+                    break;
+                case 'rivers':
+                    watersheds.forEach(w => w.style.display = 'none');
+                    rivers.forEach(r => r.style.display = 'block');
+                    break;
+                case 'both':
+                    watersheds.forEach(w => w.style.display = 'block');
+                    rivers.forEach(r => r.style.display = 'block');
+                    break;
+            }
+        }
+        
+        function resetView() {
+            toggleView('both');
+            resetInfo();
+            // Update active button
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.btn')[2].classList.add('active'); // Both button
+        }
+        
+        // Add event listeners to watersheds
+        document.addEventListener('DOMContentLoaded', function() {
+            const watersheds = document.querySelectorAll('.watershed');
+            watersheds.forEach(watershed => {
+                watershed.addEventListener('click', function() {
+                    const watershedType = this.getAttribute('data-watershed');
+                    showWatershedInfo(watershedType);
+                });
+            });
+            
+            // Click outside to reset
+            document.getElementById('map').addEventListener('click', function(e) {
+                if (!e.target.classList.contains('watershed')) {
+                    resetInfo();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
