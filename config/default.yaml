@@ -1,0 +1,44 @@
+# Default configuration for Aberdeenshire Watershed Mapping
+project:
+  name: "Aberdeenshire Watershed Mapping"
+  coordinate_system: "EPSG:27700"
+  region:
+    bounds: [350000, 450000, 780000, 880000]
+    name: "Aberdeenshire"
+
+data_sources:
+  dem:
+    source: "EU-DEM"
+    resolution: 25
+    filename: "eudem_aberdeenshire.tif"
+    url: "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
+  osm:
+    url: "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
+    filename: "scotland-latest.osm.pbf"
+
+processing:
+  watersheds:
+    stream_threshold: 1000
+    outlets:
+      - name: "dee"
+        coordinates: [384500, 801500]
+      - name: "don" 
+        coordinates: [390000, 820000]
+  
+  cartography:
+    dpi: 300
+    map_size: "15c"
+    colors:
+      watersheds: "set1"
+      rivers: "blue"
+      settlements: "red"
+
+paths:
+  data_dir: "data"
+  raw_data: "${data_dir}/raw"
+  processed_data: "${data_dir}/processed"
+  output: "output"
+  grassdb: "grassdb"
+
+environment:
+  grass_location: "aberdeenshire_bng"
