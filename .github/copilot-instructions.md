@@ -9,12 +9,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Bootstrap and Setup (CRITICAL - Run First)
 - Install required system dependencies:
   ```bash
-  sudo apt update
-  sudo apt install -y grass-core gdal-bin gmt gmt-dcw gmt-gshhg ghostscript python3-pip wget osmium-tool
-  ```
-- Install Python geospatial packages:
-  ```bash
-  pip3 install geopandas rasterio shapely fiona pyproj numpy rasterstats
+  nix-shell
   ```
 - **TIMING**: System setup takes 3-5 minutes. NEVER CANCEL.
 
@@ -129,9 +124,7 @@ watershed_map/
   # scripts/acquire_data.sh will fail with "unable to resolve host address"
   # Use mock data for testing instead
   ```
-- **GRASS version differences**: Scripts may reference `grass78` but system has `grass`
 - **Shapefile export format**: Use `ESRI_Shapefile` instead of `ESRI Shapefile` in v.out.ogr commands
-- **GMT requires Ghostscript**: Install with `sudo apt install ghostscript`
 
 ### Validation Commands (Always Run Before Finishing)
 

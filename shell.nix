@@ -29,6 +29,10 @@ pkgs.mkShell {
     # Required system libraries (dependencies)
     proj
 
+    ghostscript
+
+    gemini-cli
+    claude-code
   ];
 
   # Environment variables

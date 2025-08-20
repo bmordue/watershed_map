@@ -31,7 +31,7 @@ cat > output/metadata.txt << EOF
 Aberdeenshire Watershed Map
 Created: $(date)
 DEM Source: EU-DEM 25m
-Processing: GRASS GIS $(grass78 --version)
+Processing: GRASS GIS $(grass --version)
 Coordinate System: EPSG:27700 (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)
 EOF

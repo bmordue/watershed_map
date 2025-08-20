@@ -51,7 +51,7 @@ export GRASS_DB="$WORKSPACE/grassdb"
 export LOCATION="aberdeenshire_bng"
 
 # Create GRASS location (British National Grid)
-grass78 -c EPSG:27700 "$GRASS_DB/$LOCATION"
+grass -c EPSG:27700 "$GRASS_DB/$LOCATION"
 ```
 
 ### 2. Data Acquisition Script
@@ -88,7 +88,7 @@ ogr2ogr -f "ESRI Shapefile" data/processed/rivers.shp \
 # process_dem.sh
 
 # Start GRASS session
-grass78 "$GRASS_DB/$LOCATION/PERMANENT"
+grass "$GRASS_DB/$LOCATION/PERMANENT"
 
 # Set region and import DEM
 g.region -s raster=eudem_aberdeenshire
@@ -361,7 +361,7 @@ cat > output/metadata.txt << EOF
 Aberdeenshire Watershed Map
 Created: $(date)
 DEM Source: EU-DEM 25m
-Processing: GRASS GIS $(grass78 --version)
+Processing: GRASS GIS $(grass --version)
 Coordinate System: EPSG:27700 (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)
 EOF
