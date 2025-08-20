@@ -1,12 +1,14 @@
 #!/bin/bash
 # process_dem.sh
 
+DATA_DIR=../data
+
 # Start GRASS session
-grass78 "$GRASS_DB/$LOCATION/PERMANENT"
+grass "$GRASS_DB/$LOCATION/PERMANENT"
 
 # Set region and import DEM
 g.region -s raster=eudem_aberdeenshire
-r.in.gdal input=data/raw/eudem_aberdeenshire.tif output=dem
+r.in.gdal input=$DATA_DIR/raw/eudem_aberdeenshire.tif output=dem
 
 # Fill sinks (critical for watershed analysis)
 r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas

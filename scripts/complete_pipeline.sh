@@ -1,5 +1,4 @@
 #!/bin/bash
-# complete_pipeline.sh
 
 set -e  # Exit on any error
 
@@ -7,15 +6,15 @@ echo "Starting Aberdeenshire watershed mapping pipeline..."
 
 # Step 1: Setup
 echo "Setting up environment..."
-./setup_environment.sh
+sh setup_environment.sh
 
 # Step 2: Data acquisition
 echo "Acquiring data..."
-./acquire_data.sh
+sh acquire_data.sh
 
 # Step 3: DEM processing
 echo "Processing DEM..."
-./process_dem.sh
+sh process_dem.sh
 
 # Step 4: Calculate statistics
 echo "Calculating watershed statistics..."
@@ -23,7 +22,7 @@ python3 process_watersheds.py
 
 # Step 5: Create publication map
 echo "Creating publication map..."
-./create_map_gmt.sh
+sh create_map_gmt.sh
 
 # Step 6: Generate metadata
 echo "Generating metadata..."

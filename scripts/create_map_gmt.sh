@@ -1,5 +1,6 @@
 #!/bin/bash
 # create_map_gmt.sh
+DATA_DIR=../data
 
 # GMT modern mode
 gmt begin aberdeenshire_watersheds png,pdf
@@ -11,13 +12,13 @@ gmt basemap -R350000/450000/780000/880000 -JX15c -Ba20000 -BWSne
 gmt makecpt -Cset1 -T1/7/1 -H > watersheds.cpt
 
 # Plot DEM as hillshade background
-gmt grdimage data/processed/dem_filled.tif -Igradient.grd -Cgray -t70
+gmt grdimage $DATA_DIR/processed/dem_filled.tif -Igradient.grd -Cgray -t70
 
 # Plot watersheds with colors
-gmt plot data/processed/watersheds.shp -Cwatershed_id@watersheds.cpt -W0.5p,black
+gmt plot $DATA_DIR/processed/watersheds.shp -Cwatershed_id@watersheds.cpt -W0.5p,black
 
 # Plot rivers
-gmt plot data/processed/streams.shp -W1p,blue
+gmt plot $DATA_DIR/processed/streams.shp -W1p,blue
 
 # Add settlements
 gmt plot settlements.txt -Sc0.3c -Gred -W0.25p,black

@@ -1,8 +1,7 @@
 #!/bin/bash
-# setup_environment.sh
 
 # Set workspace
-export WORKSPACE="$(pwd)"
+export WORKSPACE="$(pwd)/../data"
 export GRASS_DB="$WORKSPACE/grassdb"
 export LOCATION="aberdeenshire_bng"
 

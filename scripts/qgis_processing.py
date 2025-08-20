@@ -20,18 +20,18 @@ def create_watershed_map():
     """Create publication-quality map using QGIS processing"""
     
     # Load layers
-    dem_layer = QgsRasterLayer('data/processed/dem_filled.tif', 'DEM')
-    watershed_layer = QgsVectorLayer('data/processed/watersheds.shp', 'Watersheds')
-    rivers_layer = QgsVectorLayer('data/processed/streams.shp', 'Rivers')
+    dem_layer = QgsRasterLayer('../data/processed/dem_filled.tif', 'DEM')
+    watershed_layer = QgsVectorLayer('../data/processed/watersheds.shp', 'Watersheds')
+    rivers_layer = QgsVectorLayer('../data/processed/streams.shp', 'Rivers')
     
     # Create hillshade
     hillshade_params = {
-        'INPUT': 'data/processed/dem_filled.tif',
+        'INPUT': '../data/processed/dem_filled.tif',
         'BAND': 1,
         'Z_FACTOR': 1,
         'AZIMUTH': 315,
         'V_ANGLE': 45,
-        'OUTPUT': 'data/processed/hillshade.tif'
+        'OUTPUT': '../data/processed/hillshade.tif'
     }
     
     processing.run("gdal:hillshade", hillshade_params)

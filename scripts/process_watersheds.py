@@ -46,9 +46,9 @@ def calculate_watershed_stats(watersheds_path, dem_path):
     return watersheds
 
 # Usage
-vectorize_watersheds('data/processed/watersheds.tif', 
-                    'data/processed/watersheds.shp')
+vectorize_watersheds('../data/processed/watersheds.tif', 
+                    '../data/processed/watersheds.shp')
                     
-watershed_stats = calculate_watershed_stats('data/processed/watersheds.shp',
-                                          'data/processed/dem_filled.tif')
-watershed_stats.to_file('data/processed/watersheds_with_stats.shp')
+watershed_stats = calculate_watershed_stats('../data/processed/watersheds.shp',
+                                          '../data/processed/dem_filled.tif')
+watershed_stats.to_file('../data/processed/watersheds_with_stats.shp')
