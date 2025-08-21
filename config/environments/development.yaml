@@ -1,0 +1,25 @@
+# Development environment configuration
+# This overrides values from default.yaml for development/testing
+
+processing:
+  watersheds:
+    stream_threshold: 500  # Lower threshold for testing with smaller datasets
+    outlets:
+      - name: "test_outlet1"
+        coordinates: [400000, 800000]
+      - name: "test_outlet2"
+        coordinates: [410000, 810000]
+  
+  cartography:
+    dpi: 150  # Faster rendering for development
+
+paths:
+  data_dir: "test_data"
+  raw_data: "${data_dir}/raw"
+  processed_data: "${data_dir}/processed"
+  output: "test_output"
+
+project:
+  name: "Development Test - Watershed Mapping"
+  region:
+    name: "Test Region"
