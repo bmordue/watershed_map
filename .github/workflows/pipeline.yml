@@ -55,7 +55,6 @@ jobs:
       run: |
         cd scripts
         nix-shell ../shell.nix --run "./complete_pipeline.sh"
-      continue-on-error: true
         
     - name: Check outputs
       run: |

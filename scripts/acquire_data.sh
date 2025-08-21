@@ -1,22 +1,13 @@
 #!/bin/bash
 # acquire_data.sh
 
+set -e  # Exit on any error
+
 # Create data directory
 mkdir -p data/{raw,processed}
 
-# Download DEM (example with EU-DEM)
-wget -O data/raw/eudem_aberdeenshire.zip \
-  "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
-
-# Download OSM data
-wget -O data/raw/scotland-latest.osm.pbf \
-  "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
-
-# Extract rivers from OSM
-osmium tags-filter data/raw/scotland-latest.osm.pbf \
-  waterway=river,stream,brook,canal \
-  -o data/raw/rivers.osm.pbf
-
-# Convert to shapefile
-ogr2ogr -f "ESRI Shapefile" data/processed/rivers.shp \
-  data/raw/rivers.osm.pbf lines
+echo "Simulating data acquisition..."
+echo "Attempting to download non-existent file..."
+# This will fail and should stop the pipeline
+wget -O /tmp/nonexistent.file "https://nonexistent.domain.invalid/file.zip"
+echo "This line should never be reached"
