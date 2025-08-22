@@ -1,5 +1,6 @@
 #!/bin/bash
-# acquire_data.sh
+
+set -e
 
 # Create data directory
 mkdir -p data/{raw,processed}
