@@ -5,10 +5,19 @@ load_config() {
     # Use provided config file or default
     CONFIG_FILE="${CONFIG_FILE:-config/default.yaml}"
     
-    # Check if config file exists
+    # If config file doesn't exist, try to find it relative to repo root
     if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Configuration file '$CONFIG_FILE' not found" >&2
-        return 1
+        # Try from current directory
+        if [ -f "../$CONFIG_FILE" ]; then
+            CONFIG_FILE="../$CONFIG_FILE"
+        # Try from scripts directory perspective
+        elif [ -f "../../$CONFIG_FILE" ]; then
+            CONFIG_FILE="../../$CONFIG_FILE"
+        else
+            echo "Error: Configuration file '$CONFIG_FILE' not found" >&2
+            echo "Searched in: $PWD/$CONFIG_FILE, $PWD/../$CONFIG_FILE, $PWD/../../$CONFIG_FILE" >&2
+            return 1
+        fi
     fi
     
     # Check if Python with yaml is available
