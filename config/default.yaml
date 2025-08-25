@@ -13,7 +13,7 @@ data_sources:
     filename: "eudem_aberdeenshire.tif"
     url: "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
   osm:
-    url: "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
+    url: "https://download.geofabrik.de/europe/united-kingdom/scotland-latest.osm.pbf"
     filename: "scotland-latest.osm.pbf"
 
 processing:

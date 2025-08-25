@@ -1,5 +1,7 @@
+set -e
+
 # Download EU-DEM (25m resolution)
-wget "https://cloud.sddi.gov.uk/s/obZAZzLTGYebFex/download"
+wget -O data/raw/eudem_25m.tif "https://cloud.sddi.gov.uk/s/obZAZzLTGYebFex/download"
 
 # Or use SRTM data via GDAL
 gdal_translate -of GTiff -co COMPRESS=LZW \
