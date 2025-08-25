@@ -79,24 +79,32 @@ def main():
         
         # Check if required input files exist
         if os.path.exists(watersheds_raster):
-            print(f"Processing watersheds from: {watersheds_raster}")
-            vectorize_watersheds(watersheds_raster, watersheds_vector)
+            if os.path.exists(watersheds_vector):
+                print(f"Watershed vector file already exists: {watersheds_vector} (skipping vectorization)")
+            else:
+                print(f"Processing watersheds from: {watersheds_raster}")
+                vectorize_watersheds(watersheds_raster, watersheds_vector)
         else:
             print(f"Warning: Watershed raster {watersheds_raster} not found, skipping vectorization")
         
         # Calculate statistics if both watershed and DEM files exist
         if os.path.exists(watersheds_vector) and os.path.exists(dem_path):
-            print(f"Calculating watershed statistics...")
-            watershed_stats = calculate_watershed_stats(watersheds_vector, dem_path)
-            watershed_stats.to_file(watersheds_with_stats)
-            print(f"Watershed statistics saved to: {watersheds_with_stats}")
+            if os.path.exists(watersheds_with_stats):
+                print(f"Watershed statistics file already exists: {watersheds_with_stats} (skipping calculation)")
+            else:
+                print(f"Calculating watershed statistics...")
+                watershed_stats = calculate_watershed_stats(watersheds_vector, dem_path)
+                watershed_stats.to_file(watersheds_with_stats)
+                print(f"Watershed statistics saved to: {watersheds_with_stats}")
             
-            # Print summary statistics
-            print("\nWatershed Summary:")
-            print(f"  Number of watersheds: {len(watershed_stats)}")
-            print(f"  Total area: {watershed_stats['area_km2'].sum():.2f} km²")
-            if 'mean_elev' in watershed_stats.columns:
-                print(f"  Average elevation: {watershed_stats['mean_elev'].mean():.1f} m")
+            # Print summary statistics if file exists (either newly created or existing)
+            if os.path.exists(watersheds_with_stats):
+                watershed_stats = gpd.read_file(watersheds_with_stats)
+                print("\nWatershed Summary:")
+                print(f"  Number of watersheds: {len(watershed_stats)}")
+                print(f"  Total area: {watershed_stats['area_km2'].sum():.2f} km²")
+                if 'mean_elev' in watershed_stats.columns:
+                    print(f"  Average elevation: {watershed_stats['mean_elev'].mean():.1f} m")
                 
         else:
             print(f"Warning: Required files not found for statistics calculation")

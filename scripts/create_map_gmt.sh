@@ -1,6 +1,14 @@
 #!/bin/bash
 # create_map_gmt.sh
 
+# Check if output maps already exist
+if [ -f "aberdeenshire_watersheds.png" ] && [ -f "aberdeenshire_watersheds.pdf" ]; then
+  echo "Map outputs already exist: aberdeenshire_watersheds.png and aberdeenshire_watersheds.pdf (skipping map creation)"
+  exit 0
+fi
+
+echo "Creating watershed maps..."
+
 # GMT modern mode
 gmt begin aberdeenshire_watersheds png,pdf
 
@@ -37,3 +45,5 @@ gmt plot -Sv0.2c+e+a40+gblack+h0.5 -W2p,black << EOF
 EOF
 
 gmt end show
+
+echo "Map creation completed successfully"

@@ -21,9 +21,20 @@ echo "  Output path: $PROCESSED_DATA_PATH"
 # Check if required directories exist
 mkdir -p "$PROCESSED_DATA_PATH"
 
-# Start GRASS session - using configurable location name
-GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-grass78 "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
+# Check if major output files already exist to avoid reprocessing
+WATERSHED_FILES_EXIST=false
+if [ -f "$PROCESSED_DATA_PATH/watershed_dee.shp" ] && [ -f "$PROCESSED_DATA_PATH/watershed_don.shp" ]; then
+  echo "Watershed shapefiles already exist (skipping DEM processing)"
+  WATERSHED_FILES_EXIST=true
+fi
+
+# Only run processing if output files don't exist
+if [ "$WATERSHED_FILES_EXIST" = false ]; then
+  echo "Starting DEM processing..."
+  
+  # Start GRASS session - using configurable location name
+  GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
+  grass78 "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
 
 # Set region and import DEM using configuration
 g.region -s raster=eudem_aberdeenshire
@@ -100,7 +111,15 @@ except Exception as e:
     sys.exit(1)
 "
 
-# Export stream network
-v.out.ogr input=stream_network output="$PROCESSED_DATA_PATH/streams.shp" format=ESRI_Shapefile
+  # Export stream network
+  if [ -f "$PROCESSED_DATA_PATH/streams.shp" ]; then
+    echo "Stream network shapefile already exists: $PROCESSED_DATA_PATH/streams.shp (skipping export)"
+  else
+    echo "Exporting stream network..."
+    v.out.ogr input=stream_network output="$PROCESSED_DATA_PATH/streams.shp" format=ESRI_Shapefile
+  fi
 
-echo "DEM processing completed successfully"
+  echo "DEM processing completed successfully"
+else
+  echo "DEM processing skipped - output files already exist"
+fi
