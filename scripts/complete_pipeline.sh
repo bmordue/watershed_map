@@ -27,7 +27,12 @@ echo "Creating publication map..."
 
 # Step 6: Generate metadata
 echo "Generating metadata..."
-cat > output/metadata.txt << EOF
+mkdir -p ../output
+if [ -f "../output/metadata.txt" ]; then
+  echo "Metadata file already exists: ../output/metadata.txt (skipping generation)"
+else
+  echo "Creating metadata file..."
+  cat > ../output/metadata.txt << EOF
 Aberdeenshire Watershed Map
 Created: $(date)
 DEM Source: EU-DEM 25m
@@ -35,5 +40,6 @@ Processing: GRASS GIS $(grass78 --version)
 Coordinate System: EPSG:27700 (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)
 EOF
+fi
 
-echo "Pipeline complete. Output in 'output/' directory."
+echo "Pipeline complete. Output in '../output/' directory."
