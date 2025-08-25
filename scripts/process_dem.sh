@@ -24,7 +24,7 @@ mkdir -p "$PROCESSED_DATA_PATH"
 
 # Start GRASS session - using configurable location name
 GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-grass78 "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
+grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
 
 # Set region and import DEM using configuration
 g.region -s raster=eudem_aberdeenshire
