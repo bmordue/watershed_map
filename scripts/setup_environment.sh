@@ -1,5 +1,4 @@
-#!/bin/bash
-# setup_environment.sh - Environment setup with configuration support
+set -e
 
 # Load configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

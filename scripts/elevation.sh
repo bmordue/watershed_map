@@ -1,3 +1,5 @@
+set -e
+
 # Download EU-DEM (25m resolution)
 wget "https://cloud.sddi.gov.uk/s/obZAZzLTGYebFex/download"
 

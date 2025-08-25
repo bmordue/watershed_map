@@ -21,6 +21,7 @@ pkgs.mkShell {
     python3Packages.fiona
     python3Packages.pyproj
     python3Packages.numpy
+    python3Packages.pyyaml
     
     # Data Acquisition Tools
     wget

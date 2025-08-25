@@ -1,6 +1,8 @@
 #!/bin/bash
 # create_map_gmt.sh
 
+set -e
+
 # GMT modern mode
 gmt begin aberdeenshire_watersheds png,pdf
 
