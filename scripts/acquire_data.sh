@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 # Create data directory
 mkdir -p data/{raw,processed}
