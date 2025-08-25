@@ -1,3 +1,9 @@
+#!/bin/sh
+# elevation.sh
+
+# Change to the project root directory
+cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
+
 # Download EU-DEM (25m resolution)
 if [ -f "download" ]; then
   echo "EU-DEM file already exists: download (skipping download)"

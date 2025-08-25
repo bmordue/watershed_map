@@ -1,5 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 # setup_environment.sh - Environment setup with configuration support
+
+# Change to the project root directory
+cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
 
 # Load configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
