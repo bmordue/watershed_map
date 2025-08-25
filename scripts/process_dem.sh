@@ -1,5 +1,6 @@
 #!/bin/bash
-# process_dem.sh - DEM processing with configuration support
+
+set -e
 
 # Load configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -28,9 +29,16 @@ echo "  GRASS Location: $GRASS_LOCATION"
 # Check if required directories exist
 mkdir -p "$PROCESSED_DATA_PATH"
 
+#<<<<<<< copilot/fix-14
 # Start GRASS session and run DEM processing commands
 echo "Starting GRASS session: $GRASS_DB/$GRASS_LOCATION/PERMANENT"
 grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT" --exec bash -c "
+#=======
+# Start GRASS session - using configurable location name
+#GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
+#grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
+
+#>>>>>>> exit-scripts
 # Set region and import DEM using configuration
 echo 'Setting region and importing DEM...'
 g.region n=880000 s=780000 w=350000 e=450000 res=25

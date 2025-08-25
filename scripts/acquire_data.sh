@@ -1,5 +1,6 @@
 #!/bin/bash
-# acquire_data.sh
+
+set -euo pipefail
 
 # Create data directory
 mkdir -p data/{raw,processed}
@@ -10,7 +11,7 @@ wget -O data/raw/eudem_aberdeenshire.zip \
 
 # Download OSM data
 wget -O data/raw/scotland-latest.osm.pbf \
-  "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
+  "https://download.geofabrik.de/europe/united-kingdom/scotland-latest.osm.pbf"
 
 # Extract rivers from OSM
 osmium tags-filter data/raw/scotland-latest.osm.pbf \
