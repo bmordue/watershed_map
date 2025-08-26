@@ -37,8 +37,8 @@ if [ "$WATERSHED_FILES_EXIST" = false ]; then
   echo "Starting DEM processing..."
   
   # Start GRASS session - using configurable location name
-  GRASS_LOCATION="$PROJECT_ROOT/grassdb/aberdeenshire_bng" #"${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-  grass "$GRASS_LOCATION/PERMANENT"
+  GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
+  grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
 
 # Set region and import DEM using configuration
 g.region -s raster=eudem_aberdeenshire
