@@ -14,8 +14,6 @@ echo "Creating watershed maps..."
 
 # GMT modern mode
 gmt begin aberdeenshire_watersheds png,pdf
-mv aberdeenshire_watersheds.p?? "$OUTPUT_DIR/"
-
 # Set region (Aberdeenshire bounds in British National Grid)
 gmt basemap -R350000/450000/780000/880000 -JX15c -Ba20000 -BWSne
 

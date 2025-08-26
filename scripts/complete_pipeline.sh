@@ -3,7 +3,7 @@
 
 set -e  # Exit on any error
 
-export PROJECT_ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
+# PROJECT_ROOT is expected to be set by the Nix environment (shell.nix)
 cd "$PROJECT_ROOT/scripts"
 
 echo "Starting Aberdeenshire watershed mapping pipeline..."
@@ -39,7 +39,7 @@ else
 Aberdeenshire Watershed Map
 Created: $(date)
 DEM Source: EU-DEM 25m
-Processing: GRASS GIS $(grass78 --version)
+Processing: GRASS GIS $(grass --version)
 Coordinate System: EPSG:27700 (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)
 EOF
