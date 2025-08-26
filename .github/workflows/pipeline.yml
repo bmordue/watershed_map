@@ -54,7 +54,7 @@ jobs:
     - name: Run complete pipeline
       run: |
         nix-shell . --quiet --run "scripts/complete_pipeline.sh"
-      continue-on-error: true
+      continue-on-error: false
         
     - name: Check outputs
       run: |
@@ -72,6 +72,5 @@ jobs:
         name: watershed-mapping-outputs
         path: |
           output/
-          data/processed/
           *.log
         retention-days: 7
