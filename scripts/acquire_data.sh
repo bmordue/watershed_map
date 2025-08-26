@@ -1,5 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 # acquire_data.sh
+
+# Change to the project root directory
+cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
 
 # Create data directory
 mkdir -p data/{raw,processed}

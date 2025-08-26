@@ -1,5 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 # create_map_gmt.sh
+
+# Change to the project root directory
+cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
 
 # Check if output maps already exist
 if [ -f "aberdeenshire_watersheds.png" ] && [ -f "aberdeenshire_watersheds.pdf" ]; then

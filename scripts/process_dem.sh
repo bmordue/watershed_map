@@ -1,8 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 # process_dem.sh - DEM processing with configuration support
 
+# Change to the project root directory
+cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
+
 # Load configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../lib/config_loader.sh"
 load_config
 
@@ -34,7 +37,7 @@ if [ "$WATERSHED_FILES_EXIST" = false ]; then
   
   # Start GRASS session - using configurable location name
   GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-  grass78 "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
+  grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
 
 # Set region and import DEM using configuration
 g.region -s raster=eudem_aberdeenshire

@@ -21,6 +21,8 @@ pkgs.mkShell {
     python3Packages.fiona
     python3Packages.pyproj
     python3Packages.numpy
+
+    python3Packages.pyyaml
     
     # Data Acquisition Tools
     wget
@@ -69,7 +71,7 @@ pkgs.mkShell {
     export PROJ_LIB=${pkgs.proj}/share/proj
     
     # Create project directories
-    mkdir -p data/{raw,processed} output scripts grassdb
+    mkdir -p data/{raw,processed} output grassdb
     
     # Helper functions
     setup_grass_location() {
