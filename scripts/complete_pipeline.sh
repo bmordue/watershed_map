@@ -30,7 +30,6 @@ echo "Creating publication map..."
 
 # Step 6: Generate metadata
 echo "Generating metadata..."
-#mkdir -p ./output
 if [ -f "./output/metadata.txt" ]; then
   echo "Metadata file already exists: ./output/metadata.txt (skipping generation)"
 else
