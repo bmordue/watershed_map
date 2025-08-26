@@ -3,7 +3,7 @@
 
 set -e  # Exit on any error
 
-export PROJECT_ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
+# PROJECT_ROOT is expected to be set by the Nix environment (shell.nix)
 cd "$PROJECT_ROOT/scripts"
 
 echo "Starting Aberdeenshire watershed mapping pipeline..."
