@@ -8,7 +8,7 @@ if [ -f "$DATA_DIR/raw/eudem_aberdeenshire.zip" ]; then
   echo "DEM file already exists: $DATA_DIR/raw/eudem_aberdeenshire.zip (skipping download)"
 else
   echo "Downloading DEM file..."
-  wget -O "$DATA_DIR/raw/eudem_aberdeenshire.zip" \
+  wget -q -O "$DATA_DIR/raw/eudem_aberdeenshire.zip" \
     "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
 fi
 
@@ -17,7 +17,7 @@ if [ -f "$DATA_DIR/raw/scotland-latest.osm.pbf" ]; then
   echo "OSM data already exists: $DATA_DIR/raw/scotland-latest.osm.pbf (skipping download)"
 else
   echo "Downloading OSM data..."
-  wget -O "$DATA_DIR/raw/scotland-latest.osm.pbf" \
+  wget -q -O "$DATA_DIR/raw/scotland-latest.osm.pbf" \
     "https://download.geofabrik.de/europe/united-kingdom/scotland-latest.osm.pbf"
 fi
 
