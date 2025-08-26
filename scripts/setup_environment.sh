@@ -5,7 +5,7 @@
 cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
 
 # Load configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../lib/config_loader.sh"
 load_config
 
