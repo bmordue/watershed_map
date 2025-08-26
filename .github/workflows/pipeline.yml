@@ -18,13 +18,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Free up disk space
-      run: |
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        df -h
+    # - name: Free up disk space
+    #   run: |
+    #     sudo rm -rf /usr/share/dotnet
+    #     sudo rm -rf /opt/ghc
+    #     sudo rm -rf "/usr/local/share/boost"
+    #     sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+    #     df -h
         
     - name: Install Nix
       uses: cachix/install-nix-action@v31
@@ -37,24 +37,23 @@ jobs:
         name: nixpkgs-unfree
         skipPush: true
         
-    - name: Make scripts executable
-      run: |
-        chmod +x scripts/*.sh
+    # - name: Make scripts executable
+    #   run: |
+    #     chmod +x scripts/*.sh
         
-    - name: Create required directories
-      run: |
-        mkdir -p data/{raw,processed} output grassdb
+    # - name: Create required directories
+    #   run: |
+    #     mkdir -p data/{raw,processed} output grassdb
         
-    - name: Test Nix environment
-      run: |
-        nix-shell shell.nix --run "echo 'Testing basic commands...'"
-        nix-shell shell.nix --run "which python3 || echo 'Python3 not found'"
-        nix-shell shell.nix --run "which grass || echo 'GRASS not found'"
+    # - name: Test Nix environment
+    #   run: |
+    #     nix-shell shell.nix --run "echo 'Testing basic commands...'"
+    #     nix-shell shell.nix --run "which python3 || echo 'Python3 not found'"
+    #     nix-shell shell.nix --run "which grass || echo 'GRASS not found'"
         
     - name: Run complete pipeline
       run: |
-        cd scripts
-        nix-shell ../shell.nix --run "./complete_pipeline.sh"
+        nix-shell . --run "scripts/complete_pipeline.sh"
       continue-on-error: true
         
     - name: Check outputs

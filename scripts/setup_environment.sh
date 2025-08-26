@@ -1,12 +1,14 @@
 #!/bin/sh
 # setup_environment.sh - Environment setup with configuration support
 
+# TODO: move all of this script to shell.nix
+
 # Change to the project root directory
-cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
+cd "$PROJECT_ROOT"
 
 # Load configuration
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/../lib/config_loader.sh"
+export SCRIPT_DIR="$PROJECT_ROOT/scripts"
+source "$PROJECT_ROOT/lib/config_loader.sh"
 load_config
 
 # Use configuration values with fallbacks for backward compatibility
@@ -28,6 +30,9 @@ export LOCATION="$LOCATION"
 
 # Create grassdb directory
 mkdir -p "$GRASS_DB"
+
+export DATA_DIR="$PROJECT_ROOT/data"
+mkdir -p "$DATA_DIR"
 
 # Create GRASS location with configurable coordinate system
 echo "Creating GRASS location '$LOCATION' with $COORDINATE_SYSTEM..."

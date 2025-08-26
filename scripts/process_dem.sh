@@ -2,11 +2,10 @@
 # process_dem.sh - DEM processing with configuration support
 
 # Change to the project root directory
-cd "$(dirname "$(dirname "$(readlink -f "$0")")")"
+cd "$PROJECT_ROOT"
 
 # Load configuration
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/../lib/config_loader.sh"
+source "$PROJECT_ROOT/lib/config_loader.sh"
 load_config
 
 # Use configuration values with fallbacks for backward compatibility
