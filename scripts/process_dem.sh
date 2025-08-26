@@ -1,7 +1,7 @@
 #!/bin/sh
 # process_dem.sh - DEM processing with configuration support
 
-set -euo pipefail
+set -eu
 
 # Change to the project root directory
 cd "$PROJECT_ROOT"
