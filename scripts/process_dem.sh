@@ -1,6 +1,8 @@
 #!/bin/sh
 # process_dem.sh - DEM processing with configuration support
 
+set -euo pipefail
+
 # Change to the project root directory
 cd "$PROJECT_ROOT"
 
@@ -35,8 +37,8 @@ if [ "$WATERSHED_FILES_EXIST" = false ]; then
   echo "Starting DEM processing..."
   
   # Start GRASS session - using configurable location name
-  GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-  grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT"
+  GRASS_LOCATION="$PROJECT_ROOT/grassdb/aberdeenshire_bng" #"${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
+  grass "$GRASS_LOCATION/PERMANENT"
 
 # Set region and import DEM using configuration
 g.region -s raster=eudem_aberdeenshire
@@ -59,7 +61,6 @@ r.mapcalc "streams = if(flow_acc > $STREAM_THRESHOLD, 1, null())"
 # Vectorize streams
 r.to.vect input=streams output=stream_network type=line
 
-# Process outlets from configuration
 echo "Processing watershed outlets from configuration..."
 
 # Parse outlets JSON and process each one

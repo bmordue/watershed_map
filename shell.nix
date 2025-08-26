@@ -70,10 +70,13 @@ pkgs.mkShell {
     export GDAL_DATA=${pkgs.gdal}/share/gdal
     export PROJ_LIB=${pkgs.proj}/share/proj
 
+    export PROJECT_ROOT="$PWD"    
+
     # Create project directories
     mkdir -p data/{raw,processed} output grassdb
     
     export OUTPUT_DIR="$PWD/output"
+    export DATA_DIR="$PWD/data"
     
     # Helper functions
     setup_grass_location() {
