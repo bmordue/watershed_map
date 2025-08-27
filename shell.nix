@@ -69,9 +69,14 @@ pkgs.mkShell {
     # GDAL configuration
     export GDAL_DATA=${pkgs.gdal}/share/gdal
     export PROJ_LIB=${pkgs.proj}/share/proj
-    
+
+    export PROJECT_ROOT="$PWD"    
+
     # Create project directories
     mkdir -p data/{raw,processed} output grassdb
+    
+    export OUTPUT_DIR="$PWD/output"
+    export DATA_DIR="$PWD/data"
     
     # Helper functions
     setup_grass_location() {
@@ -83,7 +88,6 @@ pkgs.mkShell {
         return 1
       fi
       
-      mkdir -p grassdb
       grass -c EPSG:$epsg grassdb/$location_name
       echo "GRASS location '$location_name' created with EPSG:$epsg"
     }
@@ -91,23 +95,23 @@ pkgs.mkShell {
     # Print welcome message
     cat << 'EOF'
     
-    ╔══════════════════════════════════════════════════════════════════════════════╗
-    ║                    Watershed Mapping Environment                             ║
-    ║                      Required Tools for Scripts                              ║
-    ╠══════════════════════════════════════════════════════════════════════════════╣
-    ║                                                                              ║
+    ╔═════════════════════════════════════════════════════════════════════════════╗
+    ║                    Watershed Mapping Environment                            ║
+    ║                      Required Tools for Scripts                             ║
+    ╠═════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                             ║
     ║  GIS Analysis:  GRASS GIS, GDAL, GMT, QGIS                                  ║
     ║  Languages:     Python3 (with geospatial packages)                          ║
     ║  Data Tools:    wget, osmium-tool                                           ║
-    ║                                                                              ║
-    ║  Helper Commands:                                                            ║
+    ║                                                                             ║
+    ║  Helper Commands:                                                           ║
     ║    setup_grass_location <name> <epsg>  - Create GRASS location              ║
-    ║                                                                              ║
-    ║  Quick Start:                                                                ║
+    ║                                                                             ║
+    ║  Quick Start:                                                               ║
     ║    setup_grass_location aberdeenshire_bng 27700                             ║
     ║    grass grassdb/aberdeenshire_bng/PERMANENT                                ║
-    ║                                                                              ║
-    ╚══════════════════════════════════════════════════════════════════════════════╝
+    ║                                                                             ║
+    ╚═════════════════════════════════════════════════════════════════════════════╝
     
 EOF
     

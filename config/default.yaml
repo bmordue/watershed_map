@@ -42,3 +42,4 @@ paths:
 
 environment:
   grass_location: "aberdeenshire_bng"
+  grass_mapset: "PERMANENT"

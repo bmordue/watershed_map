@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Test configuration system demonstration
 
 echo "=== Watershed Mapping Configuration System Test ==="
@@ -7,7 +7,7 @@ echo
 # Test default configuration
 echo "1. Testing default configuration:"
 CONFIG_FILE="config/default.yaml"
-source lib/config_loader.sh
+. lib/config_loader.sh
 load_config
 echo "   Project name: $CONFIG_PROJECT_NAME"
 echo "   Stream threshold: $CONFIG_PROCESSING_WATERSHEDS_STREAM_THRESHOLD"
@@ -17,7 +17,7 @@ echo
 # Test development configuration
 echo "2. Testing development configuration:"
 CONFIG_FILE="config/environments/development.yaml"
-source lib/config_loader.sh
+. lib/config_loader.sh
 load_config
 echo "   Project name: $CONFIG_PROJECT_NAME"
 echo "   Stream threshold: $CONFIG_PROCESSING_WATERSHEDS_STREAM_THRESHOLD"

@@ -18,13 +18,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Free up disk space
-      run: |
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        df -h
+    # - name: Free up disk space
+    #   run: |
+    #     sudo rm -rf /usr/share/dotnet
+    #     sudo rm -rf /opt/ghc
+    #     sudo rm -rf "/usr/local/share/boost"
+    #     sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+    #     df -h
         
     - name: Install Nix
       uses: cachix/install-nix-action@v31
@@ -32,30 +32,29 @@ jobs:
         nix_path: nixpkgs=channel:nixos-unstable
         
     - name: Setup Nix cache
-      uses: cachix/cachix-action@v12
+      uses: cachix/cachix-action@v16
       with:
         name: nixpkgs-unfree
         skipPush: true
         
-    - name: Make scripts executable
-      run: |
-        chmod +x scripts/*.sh
+    # - name: Make scripts executable
+    #   run: |
+    #     chmod +x scripts/*.sh
         
-    - name: Create required directories
-      run: |
-        mkdir -p data/{raw,processed} output grassdb
+    # - name: Create required directories
+    #   run: |
+    #     mkdir -p data/{raw,processed} output grassdb
         
-    - name: Test Nix environment
-      run: |
-        nix-shell shell.nix --run "echo 'Testing basic commands...'"
-        nix-shell shell.nix --run "which python3 || echo 'Python3 not found'"
-        nix-shell shell.nix --run "which grass || echo 'GRASS not found'"
+    # - name: Test Nix environment
+    #   run: |
+    #     nix-shell shell.nix --run "echo 'Testing basic commands...'"
+    #     nix-shell shell.nix --run "which python3 || echo 'Python3 not found'"
+    #     nix-shell shell.nix --run "which grass || echo 'GRASS not found'"
         
     - name: Run complete pipeline
       run: |
-        cd scripts
-        nix-shell ../shell.nix --run "./complete_pipeline.sh"
-      continue-on-error: true
+        nix-shell . --quiet --run "scripts/complete_pipeline.sh"
+      continue-on-error: false
         
     - name: Check outputs
       run: |
@@ -73,6 +72,5 @@ jobs:
         name: watershed-mapping-outputs
         path: |
           output/
-          data/processed/
           *.log
         retention-days: 7

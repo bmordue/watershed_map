@@ -132,6 +132,7 @@ watershed_map/
 - **GRASS version differences**: Scripts may reference `grass78` but system has `grass`
 - **Shapefile export format**: Use `ESRI_Shapefile` instead of `ESRI Shapefile` in v.out.ogr commands
 - **GMT requires Ghostscript**: Install with `sudo apt install ghostscript`
+- **CI Shell compatibility**: Scripts use POSIX-compliant `. file` instead of `source file` for CI environments that use `/bin/sh` instead of `/bin/bash`
 
 ### Validation Commands (Always Run Before Finishing)
 
