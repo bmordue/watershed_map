@@ -1,14 +1,30 @@
 #!/usr/bin/env python3
 # process_watersheds.py - Watershed processing with configuration support
+#
+# Path Setup:
+# - Script runs from scripts/ directory
+# - Project root is detected as parent directory of scripts/
+# - Config loaded from config/default.yaml (relative to project root)
+# - Lib modules loaded from lib/ directory
+# - Data paths resolved relative to project root (data/processed/, etc.)
 
 import sys
 import os
 from pathlib import Path
 
-# Add lib directory to Python path
+# Set up paths relative to project root
 script_dir = Path(__file__).parent
-lib_dir = script_dir.parent / 'lib'
+project_root = script_dir.parent
+lib_dir = project_root / 'lib'
+config_dir = project_root / 'config'
+data_dir = project_root / 'data'
+
+# Add lib directory to Python path
 sys.path.insert(0, str(lib_dir))
+
+# Set default config path relative to project root
+default_config_path = str(config_dir / 'default.yaml')
+os.environ.setdefault('CONFIG_FILE', default_config_path)
 
 from config import load_config, get_config, get_paths
 import geopandas as gpd
@@ -58,14 +74,28 @@ def calculate_watershed_stats(watersheds_path, dem_path):
 def main():
     """Main processing function using configuration"""
     try:
+        # Validate path setup
+        print("Path Setup Validation:")
+        print(f"  Script directory: {script_dir}")
+        print(f"  Project root: {project_root}")
+        print(f"  Config directory: {config_dir}")
+        print(f"  Lib directory: {lib_dir}")
+        print(f"  Data directory: {data_dir}")
+        print(f"  Default config file: {default_config_path}")
+        print(f"  Config file exists: {os.path.exists(default_config_path)}")
+        print()
+        
         # Load configuration
         config = load_config()
         paths = get_paths()
         
-        # Get configured paths with fallbacks
+        # Get configured paths with fallbacks - resolve relative to project root
         processed_data_path = paths.get('processed_data', 'data/processed')
+        if not os.path.isabs(processed_data_path):
+            processed_data_path = str(project_root / processed_data_path)
         
         print("Watershed Processing Configuration:")
+        print(f"  Project root: {project_root}")
         print(f"  Processed data path: {processed_data_path}")
         
         # Ensure output directory exists
