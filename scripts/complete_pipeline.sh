@@ -1,5 +1,4 @@
-#!/bin/bash
-# complete_pipeline.sh
+#!/bin/sh
 
 set -e  # Exit on any error
 

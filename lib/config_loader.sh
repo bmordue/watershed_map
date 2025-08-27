@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Configuration loader library for watershed mapping scripts
 
 load_config() {

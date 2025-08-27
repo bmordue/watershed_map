@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Test configuration system demonstration
 
 echo "=== Watershed Mapping Configuration System Test ==="
