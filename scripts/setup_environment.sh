@@ -8,7 +8,7 @@ cd "$PROJECT_ROOT"
 
 # Load configuration
 export SCRIPT_DIR="$PROJECT_ROOT/scripts"
-source "$PROJECT_ROOT/lib/config_loader.sh"
+. "$PROJECT_ROOT/lib/config_loader.sh"
 load_config
 
 # Use configuration values with fallbacks for backward compatibility

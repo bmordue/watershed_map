@@ -7,7 +7,7 @@ set -eu
 cd "$PROJECT_ROOT"
 
 # Load configuration
-source "$PROJECT_ROOT/lib/config_loader.sh"
+. "$PROJECT_ROOT/lib/config_loader.sh"
 load_config
 
 # Use configuration values with fallbacks for backward compatibility
