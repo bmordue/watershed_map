@@ -231,11 +231,11 @@ load_config
 # Use configuration variables
 grass78 "$GRASS_DB/$LOCATION/PERMANENT"
 
-# Set region from configuration
-g.region -s raster=eudem_aberdeenshire
-
 # Import DEM with configured parameters
-r.in.gdal input="${CONFIG_PATHS_RAW_DATA}/eudem_aberdeenshire.tif" output=dem
+r.in.gdal input="${CONFIG_PATHS_RAW_DATA}/${CONFIG_DATA_SOURCES_DEM_FILENAME}" output=dem
+
+# Set region from imported DEM
+g.region raster=dem
 
 # Fill sinks with configured algorithm
 r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas

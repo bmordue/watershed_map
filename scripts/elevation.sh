@@ -4,12 +4,12 @@
 # Change to the project root directory
 cd "$PROJECT_ROOT"
 
-# Download EU-DEM (25m resolution)
-if [ -f "$DATA_DIR/raw/eu_dem.tif" ]; then
-  echo "EU-DEM file already exists: $DATA_DIR/raw/eu_dem.tif (skipping download)"
+# Download Copernicus GLO-30 DEM (30m resolution)
+if [ -f "$DATA_DIR/raw/copdem_glo30.tif" ]; then
+  echo "Copernicus GLO-30 DEM file already exists: $DATA_DIR/raw/copdem_glo30.tif (skipping download)"
 else
-  echo "Downloading EU-DEM..."
-  wget "https://cloud.sddi.gov.uk/s/obZAZzLTGYebFex/download" -O "$DATA_DIR/raw/eu_dem.tif"
+  echo "Downloading Copernicus GLO-30 DEM..."
+  wget "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample.tif" -O "$DATA_DIR/raw/copdem_glo30.tif"
 fi
 
 # Or use SRTM data via GDAL

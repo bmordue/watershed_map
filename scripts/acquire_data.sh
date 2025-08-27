@@ -3,13 +3,13 @@
 
 cd "$PROJECT_ROOT"
 
-# Download DEM (example with EU-DEM)
-if [ -f "$DATA_DIR/raw/eudem_aberdeenshire.zip" ]; then
-  echo "DEM file already exists: $DATA_DIR/raw/eudem_aberdeenshire.zip (skipping download)"
+# Download DEM (Copernicus GLO-30)
+if [ -f "$DATA_DIR/raw/copdem_glo30_aberdeenshire.tif" ]; then
+  echo "DEM file already exists: $DATA_DIR/raw/copdem_glo30_aberdeenshire.tif (skipping download)"
 else
-  echo "Downloading DEM file..."
-  wget -q -O "$DATA_DIR/raw/eudem_aberdeenshire.zip" \
-    "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
+  echo "Downloading Copernicus GLO-30 DEM file..."
+  wget -q -O "$DATA_DIR/raw/copdem_glo30_aberdeenshire.tif" \
+    "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample_aberdeenshire.tif"
 fi
 
 # Download OSM data

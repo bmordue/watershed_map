@@ -11,7 +11,7 @@ cd "$PROJECT_ROOT"
 load_config
 
 # Use configuration values with fallbacks for backward compatibility
-DEM_FILENAME="${CONFIG_DATA_SOURCES_DEM_FILENAME:-eudem_aberdeenshire.tif}"
+DEM_FILENAME="${CONFIG_DATA_SOURCES_DEM_FILENAME:-copdem_glo30_aberdeenshire.tif}"
 RAW_DATA_PATH="${CONFIG_PATHS_RAW_DATA:-data/raw}"
 PROCESSED_DATA_PATH="${CONFIG_PATHS_PROCESSED_DATA:-data/processed}"
 STREAM_THRESHOLD="${CONFIG_PROCESSING_WATERSHEDS_STREAM_THRESHOLD:-1000}"
@@ -44,8 +44,9 @@ if [ "$WATERSHED_FILES_EXIST" = false ]; then
   
   grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT" --exec bash -c "
 # Set region and import DEM using configuration
-g.region -s raster=eudem_aberdeenshire 2>/dev/null || echo 'Warning: Could not set region from existing raster'
+g.region -s raster=dem 2>/dev/null || echo 'Warning: Could not set region from existing raster, will set after import'
 r.in.gdal input=\"$RAW_DATA_PATH/$DEM_FILENAME\" output=dem
+g.region raster=dem
 
 # Fill sinks (critical for watershed analysis)
 r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas
