@@ -23,8 +23,10 @@
 
 ### Elevation Data
 ```bash
-# Download Copernicus GLO-30 DEM (30m resolution)
-wget "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample_aberdeenshire.tif"
+# Download DEM data using configuration
+DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
+DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
+wget "$DEM_URL" -O "data/raw/$DEM_FILENAME"
 
 # Or use SRTM data via GDAL (alternative)
 gdal_translate -of GTiff -co COMPRESS=LZW \

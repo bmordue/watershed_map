@@ -3,22 +3,28 @@
 
 cd "$PROJECT_ROOT"
 
-# Download DEM (Copernicus GLO-30)
-if [ -f "$DATA_DIR/raw/copdem_glo30_aberdeenshire.tif" ]; then
-  echo "DEM file already exists: $DATA_DIR/raw/copdem_glo30_aberdeenshire.tif (skipping download)"
+# Load configuration values
+DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
+DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
+DEM_SOURCE=$(yq '.data_sources.dem.source' config/default.yaml)
+
+# Download DEM using configuration
+if [ -f "$DATA_DIR/raw/$DEM_FILENAME" ]; then
+  echo "DEM file already exists: $DATA_DIR/raw/$DEM_FILENAME (skipping download)"
 else
-  echo "Downloading Copernicus GLO-30 DEM file..."
-  wget -q -O "$DATA_DIR/raw/copdem_glo30_aberdeenshire.tif" \
-    "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample_aberdeenshire.tif"
+  echo "Downloading $DEM_SOURCE DEM file..."
+  wget -q -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"
 fi
 
 # Download OSM data
-if [ -f "$DATA_DIR/raw/scotland-latest.osm.pbf" ]; then
-  echo "OSM data already exists: $DATA_DIR/raw/scotland-latest.osm.pbf (skipping download)"
+OSM_URL=$(yq '.data_sources.osm.url' config/default.yaml)
+OSM_FILENAME=$(yq '.data_sources.osm.filename' config/default.yaml)
+
+if [ -f "$DATA_DIR/raw/$OSM_FILENAME" ]; then
+  echo "OSM data already exists: $DATA_DIR/raw/$OSM_FILENAME (skipping download)"
 else
   echo "Downloading OSM data..."
-  wget -q -O "$DATA_DIR/raw/scotland-latest.osm.pbf" \
-    "https://download.geofabrik.de/europe/united-kingdom/scotland-latest.osm.pbf"
+  wget -q -O "$DATA_DIR/raw/$OSM_FILENAME" "$OSM_URL"
 fi
 
 # Extract rivers from OSM
@@ -26,7 +32,7 @@ if [ -f "$DATA_DIR/raw/rivers.osm.pbf" ]; then
   echo "Rivers OSM file already exists: $DATA_DIR/raw/rivers.osm.pbf (skipping extraction)"
 else
   echo "Extracting rivers from OSM data..."
-  osmium tags-filter "$DATA_DIR/raw/scotland-latest.osm.pbf" \
+  osmium tags-filter "$DATA_DIR/raw/$OSM_FILENAME" \
     waterway=river,stream,brook,canal \
     -o "$DATA_DIR/raw/rivers.osm.pbf"
 fi
