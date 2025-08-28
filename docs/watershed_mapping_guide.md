@@ -23,10 +23,12 @@
 
 ### Elevation Data
 ```bash
-# Download EU-DEM (25m resolution)
-wget "https://cloud.sddi.gov.uk/s/obZAZzLTGYebFex/download"
+# Download DEM data using configuration
+DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
+DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
+wget "$DEM_URL" -O "data/raw/$DEM_FILENAME"
 
-# Or use SRTM data via GDAL
+# Or use SRTM data via GDAL (alternative)
 gdal_translate -of GTiff -co COMPRESS=LZW \
   "/vsizip//vsicurl/https://cloud.sddi.gov.uk/index.php/s/X1PGfhPINz2LRjT" \
   srtm_aberdeenshire.tif
@@ -63,9 +65,9 @@ grass78 -c EPSG:27700 "$GRASS_DB/$LOCATION"
 # Create data directory
 mkdir -p data/{raw,processed}
 
-# Download DEM (example with EU-DEM)
-wget -O data/raw/eudem_aberdeenshire.zip \
-  "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
+# Download DEM (Copernicus GLO-30)
+wget -O data/raw/copdem_glo30_aberdeenshire.tif \
+  "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample_aberdeenshire.tif"
 
 # Download OSM data
 wget -O data/raw/scotland-latest.osm.pbf \
@@ -91,8 +93,8 @@ ogr2ogr -f "ESRI Shapefile" data/processed/rivers.shp \
 grass78 "$GRASS_DB/$LOCATION/PERMANENT"
 
 # Set region and import DEM
-g.region -s raster=eudem_aberdeenshire
-r.in.gdal input=data/raw/eudem_aberdeenshire.tif output=dem
+r.in.gdal input=data/raw/copdem_glo30_aberdeenshire.tif output=dem
+g.region raster=dem
 
 # Fill sinks (critical for watershed analysis)
 r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas
@@ -360,7 +362,7 @@ echo "Generating metadata..."
 cat > output/metadata.txt << EOF
 Aberdeenshire Watershed Map
 Created: $(date)
-DEM Source: EU-DEM 25m
+DEM Source: Copernicus GLO-30 30m
 Processing: GRASS GIS $(grass78 --version)
 Coordinate System: EPSG:27700 (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)

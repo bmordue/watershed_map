@@ -34,12 +34,18 @@ if [ -f "../output/metadata.txt" ]; then
   echo "Metadata file already exists: ../output/metadata.txt (skipping generation)"
 else
   echo "Creating metadata file..."
+  # Load configuration values for metadata
+  DEM_SOURCE=$(yq '.data_sources.dem.source' config/default.yaml)
+  DEM_RESOLUTION=$(yq '.data_sources.dem.resolution' config/default.yaml)
+  PROJECT_NAME=$(yq '.project.name' config/default.yaml)
+  COORD_SYSTEM=$(yq '.project.coordinate_system' config/default.yaml)
+  
   cat > ../output/metadata.txt << EOF
-Aberdeenshire Watershed Map
+$PROJECT_NAME
 Created: $(date)
-DEM Source: EU-DEM 25m
+DEM Source: $DEM_SOURCE ${DEM_RESOLUTION}m
 Processing: GRASS GIS $(grass --version)
-Coordinate System: EPSG:27700 (British National Grid)
+Coordinate System: $COORD_SYSTEM (British National Grid)
 Software: FOSS stack (GRASS, GDAL, GMT)
 EOF
 fi

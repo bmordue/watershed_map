@@ -8,10 +8,10 @@ project:
 
 data_sources:
   dem:
-    source: "EU-DEM"
-    resolution: 25
-    filename: "eudem_aberdeenshire.tif"
-    url: "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
+    source: "Copernicus GLO-30"
+    resolution: 30
+    filename: "copdem_glo30_aberdeenshire.tif"
+    url: "https://dataspace.copernicus.eu/browser/download/COP-DEM_GLO-30_DGED__20210329T000000_20210329T235959_sample_aberdeenshire.tif"
   osm:
     url: "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
     filename: "scotland-latest.osm.pbf"

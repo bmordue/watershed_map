@@ -3,22 +3,28 @@
 
 cd "$PROJECT_ROOT"
 
-# Download DEM (example with EU-DEM)
-if [ -f "$DATA_DIR/raw/eudem_aberdeenshire.zip" ]; then
-  echo "DEM file already exists: $DATA_DIR/raw/eudem_aberdeenshire.zip (skipping download)"
+# Load configuration values
+DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
+DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
+DEM_SOURCE=$(yq '.data_sources.dem.source' config/default.yaml)
+
+# Download DEM using configuration
+if [ -f "$DATA_DIR/raw/$DEM_FILENAME" ]; then
+  echo "DEM file already exists: $DATA_DIR/raw/$DEM_FILENAME (skipping download)"
 else
-  echo "Downloading DEM file..."
-  wget -q -O "$DATA_DIR/raw/eudem_aberdeenshire.zip" \
-    "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1"
+  echo "Downloading $DEM_SOURCE DEM file..."
+  wget -q -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"
 fi
 
 # Download OSM data
-if [ -f "$DATA_DIR/raw/scotland-latest.osm.pbf" ]; then
-  echo "OSM data already exists: $DATA_DIR/raw/scotland-latest.osm.pbf (skipping download)"
+OSM_URL=$(yq '.data_sources.osm.url' config/default.yaml)
+OSM_FILENAME=$(yq '.data_sources.osm.filename' config/default.yaml)
+
+if [ -f "$DATA_DIR/raw/$OSM_FILENAME" ]; then
+  echo "OSM data already exists: $DATA_DIR/raw/$OSM_FILENAME (skipping download)"
 else
   echo "Downloading OSM data..."
-  wget -q -O "$DATA_DIR/raw/scotland-latest.osm.pbf" \
-    "https://download.geofabrik.de/europe/united-kingdom/scotland-latest.osm.pbf"
+  wget -q -O "$DATA_DIR/raw/$OSM_FILENAME" "$OSM_URL"
 fi
 
 # Extract rivers from OSM
@@ -26,7 +32,7 @@ if [ -f "$DATA_DIR/raw/rivers.osm.pbf" ]; then
   echo "Rivers OSM file already exists: $DATA_DIR/raw/rivers.osm.pbf (skipping extraction)"
 else
   echo "Extracting rivers from OSM data..."
-  osmium tags-filter "$DATA_DIR/raw/scotland-latest.osm.pbf" \
+  osmium tags-filter "$DATA_DIR/raw/$OSM_FILENAME" \
     waterway=river,stream,brook,canal \
     -o "$DATA_DIR/raw/rivers.osm.pbf"
 fi
