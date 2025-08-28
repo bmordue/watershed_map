@@ -33,9 +33,7 @@ gmt plot "$DATA_DIR/processed/watersheds.shp" -Cwatersheds.cpt -W0.5p,black
 gmt plot "$DATA_DIR/processed/streams.shp" -W1p,blue
 
 # Add title
-gmt text -F+f16p,Helvetica-Bold,black+cTL << EOF
-51c 16c Aberdeenshire Watersheds
-EOF
+gmt basemap -B+t"Aberdeenshire Watersheds"
 
 # Add north arrow
 gmt plot -Sv0.2c+e+a40+gblack+h0.5 -W2p,black << EOF
