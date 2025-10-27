@@ -17,7 +17,7 @@ echo "Acquiring data..."
 
 # Step 3: DEM processing
 echo "Processing DEM with Python script..."
-python3 run_dem_processing.py
+python3 ./run_dem_processing.py
 
 # Step 4: Calculate statistics
 echo "Calculating watershed statistics..."
