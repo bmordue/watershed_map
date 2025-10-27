@@ -53,7 +53,7 @@ python3 tests/test_grass_session_derivation.py
 
 This will verify:
 - The derivation file structure
-- Shell.nix integration
+- shell.nix integration
 - SHA256 hash correctness
 - Package installability
 
