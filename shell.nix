@@ -1,6 +1,26 @@
 { pkgs ? import <nixpkgs> {} }:
 
-pkgs.mkShell {
+let
+  # Custom Python packages
+  grassSession = pkgs.python3Packages.callPackage ./grass-session.nix {};
+  
+  # Python environment with custom packages
+  pythonWithGrass = pkgs.python3.withPackages (ps: with ps; [
+    # Essential Python Geospatial Packages (used in scripts)
+    geopandas
+    rasterio
+    shapely
+    fiona
+    pyproj
+    numpy
+    pyyaml
+    pip
+    
+    # Custom package
+    grassSession
+  ]);
+
+in pkgs.mkShell {
   name = "watershed-mapping-env";
   
   buildInputs = with pkgs; [
@@ -10,19 +30,8 @@ pkgs.mkShell {
     gmt
     qgis
     
-    # Programming Languages and Core Tools
-    python3
-    python3Packages.pip
-    
-    # Essential Python Geospatial Packages (used in scripts)
-    python3Packages.geopandas
-    python3Packages.rasterio
-    python3Packages.shapely
-    python3Packages.fiona
-    python3Packages.pyproj
-    python3Packages.numpy
-
-    python3Packages.pyyaml
+    # Python with all required packages
+    pythonWithGrass
     
     # Data Acquisition Tools
     wget
@@ -36,7 +45,7 @@ pkgs.mkShell {
   # Environment variables
   shellHook = ''
     # Set up environment variables
-    export GRASS_PYTHON=${pkgs.python3}/bin/python3
+    export GRASS_PYTHON=${pythonWithGrass}/bin/python3
     export GRASS_MESSAGE_FORMAT=plain
     
     # GMT defaults
@@ -129,7 +138,7 @@ EOF
     echo "Checking Python geospatial packages..."
     python3 -c "
 import sys
-packages = ['geopandas', 'rasterio', 'fiona', 'shapely', 'pyproj', 'numpy', 'rasterstats']
+packages = ['geopandas', 'rasterio', 'fiona', 'shapely', 'pyproj', 'numpy', 'rasterstats', 'grass_session']
 for pkg in packages:
     try:
         __import__(pkg)
