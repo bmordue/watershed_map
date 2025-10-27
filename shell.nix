@@ -21,7 +21,6 @@ pkgs.mkShell {
     python3Packages.fiona
     python3Packages.pyproj
     python3Packages.numpy
-    python3Packages.grass-session
 
     python3Packages.pyyaml
     
