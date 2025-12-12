@@ -3,6 +3,9 @@
 
 cd "$PROJECT_ROOT"
 
+# Ensure data directories exist
+mkdir -p "$DATA_DIR/raw" "$DATA_DIR/processed"
+
 # Load configuration values
 DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
 DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
@@ -13,7 +16,14 @@ if [ -f "$DATA_DIR/raw/$DEM_FILENAME" ]; then
   echo "DEM file already exists: $DATA_DIR/raw/$DEM_FILENAME (skipping download)"
 else
   echo "Downloading $DEM_SOURCE DEM file..."
-  wget -q -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"
+  if ! wget -q -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"; then
+    echo "ERROR: Failed to download DEM file from $DEM_URL" >&2
+    echo "This may be due to network restrictions in CI/sandboxed environments." >&2
+    echo "Please provide the DEM file manually or use mock data for testing." >&2
+    rm -f "$DATA_DIR/raw/$DEM_FILENAME"  # Remove potentially corrupt/partial file
+    exit 1
+  fi
+  echo "DEM file downloaded successfully: $DATA_DIR/raw/$DEM_FILENAME"
 fi
 
 # Download OSM data
@@ -24,7 +34,13 @@ if [ -f "$DATA_DIR/raw/$OSM_FILENAME" ]; then
   echo "OSM data already exists: $DATA_DIR/raw/$OSM_FILENAME (skipping download)"
 else
   echo "Downloading OSM data..."
-  wget -q -O "$DATA_DIR/raw/$OSM_FILENAME" "$OSM_URL"
+  if ! wget -q -O "$DATA_DIR/raw/$OSM_FILENAME" "$OSM_URL"; then
+    echo "WARNING: Failed to download OSM data from $OSM_URL" >&2
+    echo "Continuing without OSM data..." >&2
+    rm -f "$DATA_DIR/raw/$OSM_FILENAME"  # Remove potentially corrupt/partial file
+  else
+    echo "OSM data downloaded successfully: $DATA_DIR/raw/$OSM_FILENAME"
+  fi
 fi
 
 # Extract rivers from OSM
