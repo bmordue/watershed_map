@@ -1,6 +1,8 @@
 #!/bin/sh
 # setup_environment.sh - Environment setup with configuration support
 
+set -e  # Exit on any error
+
 # TODO: move all of this script to shell.nix
 
 # Change to the project root directory
@@ -39,7 +41,11 @@ echo "Creating GRASS location '$LOCATION' with $COORDINATE_SYSTEM..."
 if [ -d "$GRASS_DB/$LOCATION" ]; then
     echo "Location '$LOCATION' already exists, skipping creation"
 else
-    grass -c "$COORDINATE_SYSTEM" "$GRASS_DB/$LOCATION" --exec echo "Location created successfully"
+    if ! grass -c "$COORDINATE_SYSTEM" "$GRASS_DB/$LOCATION" --exec echo "Location created successfully"; then
+        echo "ERROR: Failed to create GRASS location" >&2
+        echo "Please ensure GRASS GIS is installed and available in PATH" >&2
+        exit 1
+    fi
 fi
 
 echo "Environment setup completed successfully"
