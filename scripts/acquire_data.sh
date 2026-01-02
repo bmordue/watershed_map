@@ -44,7 +44,7 @@ else
       r.mapcalc 'mock_dem = sin(x()/1000)*100 + cos(y()/1000)*50 + (row()+col())/20'
       
       # Export mock DEM to GeoTIFF  
-      r.out.gdal input=mock_dem output='$OUTPUT_PATH' format=GTiff createopt='COMPRESS=LZW,TILED=YES' --overwrite
+      r.out.gdal input=mock_dem output=\"$OUTPUT_PATH\" format=GTiff createopt=\"COMPRESS=LZW,TILED=YES\" --overwrite
       
       echo 'Mock DEM created successfully'
     "; then
