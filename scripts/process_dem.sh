@@ -62,7 +62,7 @@ if [ ! -r "$DEM_PATH" ]; then
 fi
 
 # Check file size (should be substantial for DEM data)
-DEM_SIZE=$(stat -c%s "$DEM_PATH" 2>/dev/null || echo "0")
+DEM_SIZE=$(wc -c < "$DEM_PATH" 2>/dev/null | tr -d '[:space:]' || echo "0")
 if [ "$DEM_SIZE" -lt 1024 ]; then
     echo "ERROR: DEM file appears to be too small (${DEM_SIZE} bytes): $DEM_PATH" >&2
     echo "This might be an HTML redirect, error file, or corrupted download." >&2

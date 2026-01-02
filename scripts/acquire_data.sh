@@ -24,21 +24,36 @@ else
     
     # Generate mock DEM data using GRASS GIS
     echo "Creating mock DEM with GRASS GIS..."
-    grass "$PROJECT_ROOT/grassdb/aberdeenshire_bng/PERMANENT" --exec bash -c "
+    
+    # Check if GRASS location exists
+    if [ ! -d "$PROJECT_ROOT/grassdb/aberdeenshire_bng/PERMANENT" ]; then
+      echo "ERROR: GRASS location not found. Please run setup_environment.sh first." >&2
+      exit 1
+    fi
+    
+    # Create absolute output path
+    OUTPUT_PATH="$DATA_DIR/raw/$DEM_FILENAME"
+    echo "Mock DEM will be created at: $OUTPUT_PATH"
+    
+    if ! grass "$PROJECT_ROOT/grassdb/aberdeenshire_bng/PERMANENT" --exec bash -c "
+      set -e
       # Set region to Aberdeenshire bounds
       g.region n=880000 s=780000 w=350000 e=450000 res=25
       
       # Create mock DEM with realistic terrain-like features
       r.mapcalc 'mock_dem = sin(x()/1000)*100 + cos(y()/1000)*50 + (row()+col())/20'
       
-      # Export mock DEM to GeoTIFF
-      r.out.gdal input=mock_dem output=$DATA_DIR/raw/$DEM_FILENAME format=GTiff createopt=COMPRESS=LZW,TILED=YES
+      # Export mock DEM to GeoTIFF  
+      r.out.gdal input=mock_dem output=\"$OUTPUT_PATH\" format=GTiff createopt=\"COMPRESS=LZW,TILED=YES\" --overwrite
       
       echo 'Mock DEM created successfully'
-    "
+    "; then
+      echo "ERROR: GRASS GIS mock DEM generation failed" >&2
+      exit 1
+    fi
     
     if [ ! -f "$DATA_DIR/raw/$DEM_FILENAME" ]; then
-      echo "ERROR: Failed to generate mock DEM data" >&2
+      echo "ERROR: Mock DEM file was not created at expected location: $DATA_DIR/raw/$DEM_FILENAME" >&2
       exit 1
     fi
     
