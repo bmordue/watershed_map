@@ -8,6 +8,8 @@
 # - Lib modules loaded from lib/ directory
 # - Data paths resolved relative to project root (data/processed/, etc.)
 
+print("Running process_watersheds.py")
+
 import sys
 import os
 from pathlib import Path

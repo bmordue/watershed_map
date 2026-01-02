@@ -1,24 +1,24 @@
 #!/bin/sh
-# acquire_data.sh
+echo "Running acquire_data.sh"
 
 cd "$PROJECT_ROOT"
 
 # Load configuration values
-DEM_URL=$(yq '.data_sources.dem.url' config/default.yaml)
-DEM_FILENAME=$(yq '.data_sources.dem.filename' config/default.yaml)
-DEM_SOURCE=$(yq '.data_sources.dem.source' config/default.yaml)
+DEM_URL=$(yq -r '.data_sources.dem.url' config/default.yaml)
+DEM_FILENAME=$(yq -r '.data_sources.dem.filename' config/default.yaml)
+DEM_SOURCE=$(yq -r '.data_sources.dem.source' config/default.yaml)
 
 # Download DEM using configuration
 if [ -f "$DATA_DIR/raw/$DEM_FILENAME" ]; then
   echo "DEM file already exists: $DATA_DIR/raw/$DEM_FILENAME (skipping download)"
 else
   echo "Downloading $DEM_SOURCE DEM file..."
-  wget -q -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"
+  wget -O "$DATA_DIR/raw/$DEM_FILENAME" "$DEM_URL"
 fi
 
 # Download OSM data
-OSM_URL=$(yq '.data_sources.osm.url' config/default.yaml)
-OSM_FILENAME=$(yq '.data_sources.osm.filename' config/default.yaml)
+OSM_URL=$(yq -r '.data_sources.osm.url' config/default.yaml)
+OSM_FILENAME=$(yq -r '.data_sources.osm.filename' config/default.yaml)
 
 if [ -f "$DATA_DIR/raw/$OSM_FILENAME" ]; then
   echo "OSM data already exists: $DATA_DIR/raw/$OSM_FILENAME (skipping download)"

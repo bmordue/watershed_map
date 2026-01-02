@@ -1,6 +1,8 @@
 #!/bin/sh
 # setup_environment.sh - Environment setup with configuration support
 
+echo "Running setup_environment.sh"
+
 # TODO: move all of this script to shell.nix
 
 # Change to the project root directory

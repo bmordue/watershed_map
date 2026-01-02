@@ -1,6 +1,8 @@
 #!/bin/sh
 # create_map_gmt.sh
 
+echo "Running create_map_gmt.sh"
+
 # Change to the project root directory
 cd "$PROJECT_ROOT"
 

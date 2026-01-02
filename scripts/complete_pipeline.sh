@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Running complete_pipeline.sh"
 
 set -e  # Exit on any error
 

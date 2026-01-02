@@ -31,6 +31,8 @@ pkgs.mkShell {
     # Required system libraries (dependencies)
     proj
 
+    yq
+
   ];
 
   # Environment variables

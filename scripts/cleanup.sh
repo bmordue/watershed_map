@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Running cleanup.sh"
 # cleanup.sh - Remove all downloaded and generated files from watershed mapping pipeline
 #
 # This script removes all files and directories created by the watershed mapping workflow:

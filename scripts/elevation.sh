@@ -6,6 +6,8 @@
 # This is separate from acquire_data.sh to allow for standalone elevation
 # data operations without downloading the full dataset.
 
+echo "Running elevation.sh"
+
 # Change to the project root directory
 cd "$PROJECT_ROOT"
 

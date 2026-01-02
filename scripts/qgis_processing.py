@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # qgis_processing.py
 
+print("Running qgis_processing.py")
+
 import sys
 import os
 from qgis.core import *
