@@ -40,7 +40,7 @@ gmt plot -Sv0.2c+e+a40+gblack+h0.5 -W2p,black << EOF
 13c 10c 90 2c
 EOF
 
-gmt end show
+gmt end
 
 # Change back to project root
 cd "$PROJECT_ROOT"

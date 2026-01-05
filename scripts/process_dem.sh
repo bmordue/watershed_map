@@ -199,25 +199,23 @@ echo 'DEM successfully imported into GRASS:'
 echo \"\$DEM_GRASS_INFO\" | grep -E '(rows|cols|north|south|east|west|min|max)' | sed 's/^/  /'
 
 
-# Set region and import DEM using configuration
-g.region -s raster=dem 2>/dev/null || echo 'Warning: Could not set region from existing raster, will set after import'
-r.in.gdal input=\"$RAW_DATA_PATH/$DEM_FILENAME\" output=dem
+# Set region from imported DEM
 g.region raster=dem
 
 # Fill sinks (critical for watershed analysis)
-r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas
+r.fill.dir input=dem output=dem_filled direction=flow_dir areas=problem_areas --overwrite
 
-# Alternative: use Wang & Liu algorithm for better sink filling
-r.terraflow elevation=dem filled=dem_filled direction=flow_dir swatershed=watersheds accumulation=flow_acc
-
-# Calculate flow accumulation
-r.flow elevation=dem_filled flowline=flowlines flowlength=flowlength flowaccumulation=flow_acc
+# Calculate flow accumulation using r.terraflow (Wang & Liu algorithm)
+r.terraflow elevation=dem_filled filled=dem_filled_tf direction=flow_dir_tf swatershed=watersheds accumulation=flow_acc --overwrite
 
 # Define stream network threshold using configuration
-r.mapcalc \"streams = if(flow_acc > $STREAM_THRESHOLD, 1, null())\"
+r.mapcalc \"streams = if(flow_acc > $STREAM_THRESHOLD, 1, null())\" --overwrite
 
-# Vectorize streams
-r.to.vect input=streams output=stream_network type=line
+# Thin the streams raster before vectorisation (required for r.to.vect)
+r.thin input=streams output=streams_thin --overwrite
+
+# Vectorise streams
+r.to.vect input=streams_thin output=stream_network type=line --overwrite
 
 echo 'Processing watershed outlets from configuration...'
 
@@ -262,12 +260,20 @@ except Exception as e:
     sys.exit(1)
 \"
 
+# Export dem_filled raster for GMT map creation
+echo 'Exporting filled DEM raster...'
+r.out.gdal input=dem_filled output=\"$PROCESSED_DATA_PATH/dem_filled.tif\" format=GTiff --overwrite
+
+# Export watersheds raster for Python statistics
+echo 'Exporting watersheds raster...'
+r.out.gdal input=watersheds output=\"$PROCESSED_DATA_PATH/watersheds.tif\" format=GTiff --overwrite
+
 # Export stream network
 if [ -f \"$PROCESSED_DATA_PATH/streams.shp\" ]; then
   echo \"Stream network shapefile already exists: $PROCESSED_DATA_PATH/streams.shp (skipping export)\"
 else
   echo \"Exporting stream network...\"
-  v.out.ogr input=stream_network output=\"$PROCESSED_DATA_PATH/streams.shp\" format=ESRI_Shapefile
+  v.out.ogr input=stream_network output=\"$PROCESSED_DATA_PATH/streams.shp\" format=ESRI_Shapefile --overwrite
 fi
 
 echo 'DEM processing completed successfully'
