@@ -2,7 +2,7 @@ name: Watershed Mapping Pipeline
 
 on:
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 env:
   # Set headless mode for GIS applications

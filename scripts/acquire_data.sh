@@ -41,7 +41,7 @@ else
       g.region n=880000 s=780000 w=350000 e=450000 res=25
       
       # Create mock DEM with realistic terrain-like features
-      r.mapcalc 'mock_dem = sin(x()/1000)*100 + cos(y()/1000)*50 + (row()+col())/20'
+      r.mapcalc --overwrite 'mock_dem = sin(x()/1000)*100 + cos(y()/1000)*50 + (row()+col())/20'
       
       # Export mock DEM to GeoTIFF  
       r.out.gdal input=mock_dem output=\"$OUTPUT_PATH\" format=GTiff createopt=\"COMPRESS=LZW,TILED=YES\" --overwrite

@@ -27,6 +27,7 @@ pkgs.mkShell {
     # Data Acquisition Tools
     wget
     osmium-tool
+    yq-go
     
     # Required system libraries (dependencies)
     proj
@@ -42,20 +43,20 @@ pkgs.mkShell {
     # GMT defaults
     export GMT_SESSION_NAME=$$
     
-    # Python virtual environment for additional packages
+    # Python virtual environment for additional packages not in nixpkgs
     export VENV_DIR="$PWD/.venv"
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "$VENV_DIR" ]; then
       echo "Creating Python virtual environment..."
-      python3 -m venv "$VENV_DIR"
+      python3 -m venv "$VENV_DIR" --system-site-packages
     fi
     
     # Activate virtual environment
     source "$VENV_DIR/bin/activate"
     
     # Install additional Python packages not available in nixpkgs
-    pip install --quiet rasterstats
+    "$VENV_DIR/bin/pip" install --quiet rasterstats 2>/dev/null || true
     
     # GRASS GIS setup
     echo "Setting up GRASS GIS environment..."
