@@ -1,0 +1,35 @@
+# Test configuration for watershed mapping
+project:
+  name: "Test Watershed"
+  coordinate_system: "EPSG:27700"
+  region:
+    bounds: [400000, 410000, 800000, 810000]  # Small test region
+    name: "Test Region"
+
+data_sources:
+  dem:
+    source: "test_data"
+    resolution: 30
+    filename: "test_dem.tif"
+    path: "tests/fixtures/test_dem.tif"
+  osm:
+    url: "https://download.geofabrik.de/europe/great-britain/scotland-latest.osm.pbf"
+    filename: "scotland-latest.osm.pbf"
+
+processing:
+  watersheds:
+    stream_threshold: 100  # Lower threshold for small test area
+    outlets:
+      - name: "test_outlet"
+        coordinates: [405000, 805000]
+
+paths:
+  data_dir: "tests/tmp/data"
+  raw_data: "${data_dir}/raw"
+  processed_data: "${data_dir}/processed"
+  output: "tests/tmp/output"
+  grassdb: "tests/tmp/grassdb"
+
+environment:
+  grass_location: "test_location"
+  grass_mapset: "PERMANENT"

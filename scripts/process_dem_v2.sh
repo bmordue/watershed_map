@@ -1,7 +1,7 @@
-#!/bin/sh
-# process_dem.sh - DEM processing with configuration support
+#!/bin/bash
+# process_dem_v2.sh - Configuration-driven DEM processing
 
-echo "Running process_dem.sh"
+echo "Running process_dem_v2.sh"
 
 set -eu
 
@@ -159,20 +159,50 @@ mkdir -p "$PROCESSED_DATA_PATH"
 
 # Check if major output files already exist to avoid reprocessing
 WATERSHED_FILES_EXIST=false
-if [ -f "$PROCESSED_DATA_PATH/watershed_dee.shp" ] && [ -f "$PROCESSED_DATA_PATH/watershed_don.shp" ]; then
-  echo "Watershed shapefiles already exist (skipping DEM processing)"
-  WATERSHED_FILES_EXIST=true
+OUTLETS_JSON="$OUTLETS"
+if [ "$OUTLETS_JSON" != "[]" ]; then
+    # Parse outlets and check if all watershed files exist
+    python3 -c "
+import json
+import sys
+import os
+
+try:
+    outlets_json = '$OUTLETS_JSON'
+    outlets = json.loads(outlets_json)
+    all_exist = True
+    
+    for outlet in outlets:
+        name = outlet.get('name', '')
+        if name:
+            shapefile_path = '$PROCESSED_DATA_PATH/watershed_{}.shp'.format(name)
+            if not os.path.exists(shapefile_path):
+                all_exist = False
+                break
+    
+    print('true' if all_exist else 'false')
+except:
+    print('false')
+" > /tmp/watershed_check.txt
+
+    WATERSHED_FILES_EXIST=$(cat /tmp/watershed_check.txt)
+    rm -f /tmp/watershed_check.txt
+else
+    # Fallback to checking hardcoded files
+    if [ -f "$PROCESSED_DATA_PATH/watershed_dee.shp" ] && [ -f "$PROCESSED_DATA_PATH/watershed_don.shp" ]; then
+        WATERSHED_FILES_EXIST=true
+    fi
 fi
 
 # Only run processing if output files don't exist
 if [ "$WATERSHED_FILES_EXIST" = false ]; then
-  echo "Starting DEM processing..."
-  
-  # Start GRASS session - using configurable location name
-  GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
-  echo "Using GRASS location: $GRASS_DB/$GRASS_LOCATION/PERMANENT"
-  
-  grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT" --exec bash -c "
+    echo "Starting DEM processing..."
+    
+    # Start GRASS session - using configurable location name
+    GRASS_LOCATION="${CONFIG_ENVIRONMENT_GRASS_LOCATION:-aberdeenshire_bng}"
+    echo "Using GRASS location: $GRASS_DB/$GRASS_LOCATION/PERMANENT"
+    
+    grass "$GRASS_DB/$GRASS_LOCATION/PERMANENT" --exec bash -c "
 
 # Import DEM using configuration with validation
 echo 'Importing DEM into GRASS GIS...'
@@ -198,7 +228,7 @@ DEM_GRASS_INFO=\$(r.info map=dem 2>/dev/null) || {
 }
 
 echo 'DEM successfully imported into GRASS:'
-echo "\$DEM_GRASS_INFO" | grep -E '(rows|cols|north|south|east|west|min|max)' | sed 's/^/  /'
+echo \"\$DEM_GRASS_INFO\" | grep -E '(rows|cols|north|south|east|west|min|max)' | sed 's/^/  /'
 
 
 # Set region and import DEM using configuration
@@ -231,7 +261,7 @@ import sys
 import os
 
 try:
-    outlets_json = '$OUTLETS'
+    outlets_json = '$OUTLETS_JSON'
     outlets = json.loads(outlets_json)
     
     for i, outlet in enumerate(outlets):
@@ -275,5 +305,5 @@ fi
 echo 'DEM processing completed successfully'
 "
 else
-  echo "DEM processing skipped - output files already exist"
+    echo "DEM processing skipped - output files already exist"
 fi
