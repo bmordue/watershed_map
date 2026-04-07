@@ -3,6 +3,24 @@
 
 # TODO: move all of this script to shell.nix
 
+# Ensure PROJECT_ROOT is set, fallback to finding it
+if [ -z "$PROJECT_ROOT" ]; then
+  # Find the project root by looking for the .git directory
+  CURRENT_DIR=$(pwd)
+  while [ "$CURRENT_DIR" != "/" ]; do
+    if [ -d "$CURRENT_DIR/.git" ]; then
+      PROJECT_ROOT="$CURRENT_DIR"
+      break
+    fi
+    CURRENT_DIR=$(dirname "$CURRENT_DIR")
+  done
+
+  if [ -z "$PROJECT_ROOT" ]; then
+    echo "Error: Could not determine PROJECT_ROOT. Please set it manually."
+    exit 1
+  fi
+fi
+
 # Change to the project root directory
 cd "$PROJECT_ROOT"
 
