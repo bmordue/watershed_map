@@ -16,7 +16,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     # - name: Free up disk space
     #   run: |
@@ -32,7 +32,7 @@ jobs:
         nix_path: nixpkgs=channel:nixos-unstable
         
     - name: Setup Nix cache
-      uses: cachix/cachix-action@v16
+      uses: cachix/cachix-action@v17
       with:
         name: nixpkgs-unfree
         skipPush: true
@@ -66,7 +66,7 @@ jobs:
         find . -name "*.log" -exec cat {} \; || echo "No log files found"
         
     - name: Upload pipeline outputs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: watershed-mapping-outputs
