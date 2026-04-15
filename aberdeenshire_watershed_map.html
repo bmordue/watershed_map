@@ -191,6 +191,18 @@
         .btn.active {
             background: #e74c3c;
         }
+
+        .watershed:focus-visible,
+        .legend-item:focus-visible,
+        .btn:focus-visible {
+            outline: 3px solid #f1c40f;
+            outline-offset: 2px;
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
+        }
+
+        .legend-item {
+            cursor: pointer;
+        }
         
         /* Watershed colors */
         .dee { background: rgba(231, 76, 60, 0.3); border-color: #e74c3c; }
@@ -217,37 +229,37 @@
         <div class="map-container">
             <div id="map">
                 <!-- River Dee Watershed -->
-                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee">
+                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee" tabindex="0" role="button" aria-label="River Dee Basin">
                     <div class="watershed-label" style="left: 50%; top: 30%; color: #c0392b;">River Dee Basin</div>
                 </div>
                 
                 <!-- River Don Watershed -->
-                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don">
+                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don" tabindex="0" role="button" aria-label="River Don Basin">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #2980b9;">River Don Basin</div>
                 </div>
                 
                 <!-- River Ythan Watershed -->
-                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan">
+                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan" tabindex="0" role="button" aria-label="River Ythan Basin">
                     <div class="watershed-label" style="left: 50%; top: 60%; color: #27ae60;">River Ythan Basin</div>
                 </div>
                 
                 <!-- River Ugie Watershed -->
-                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie">
+                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie" tabindex="0" role="button" aria-label="River Ugie Basin">
                     <div class="watershed-label" style="left: 50%; top: 70%; color: #8e44ad;">River Ugie Basin</div>
                 </div>
                 
                 <!-- River Deveron Watershed -->
-                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron">
+                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron" tabindex="0" role="button" aria-label="River Deveron Basin">
                     <div class="watershed-label" style="left: 60%; top: 70%; color: #d35400;">River Deveron Basin</div>
                 </div>
                 
                 <!-- River Spey Watershed (partial) -->
-                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey">
+                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey" tabindex="0" role="button" aria-label="Spey Basin (partial)">
                     <div class="watershed-label" style="left: 70%; top: 50%; color: #f39c12;">Spey Basin (partial)</div>
                 </div>
                 
                 <!-- Coastal Watersheds -->
-                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal">
+                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal" tabindex="0" role="button" aria-label="Coastal Streams">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #7f8c8d;">Coastal Streams</div>
                 </div>
                 
@@ -263,19 +275,19 @@
         <div class="legend">
             <div class="legend-section">
                 <h3>Major Watersheds</h3>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="dee" tabindex="0" role="button" aria-label="Select River Dee Basin">
                     <div class="legend-color" style="background: rgba(231, 76, 60, 0.3); border-color: #e74c3c;"></div>
                     <span><strong>River Dee Basin</strong> - Largest watershed, flows east to Aberdeen</span>
                 </div>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="don" tabindex="0" role="button" aria-label="Select River Don Basin">
                     <div class="legend-color" style="background: rgba(52, 152, 219, 0.3); border-color: #3498db;"></div>
                     <span><strong>River Don Basin</strong> - Second largest, flows northeast</span>
                 </div>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="ythan" tabindex="0" role="button" aria-label="Select River Ythan Basin">
                     <div class="legend-color" style="background: rgba(46, 204, 113, 0.3); border-color: #2ecc71;"></div>
                     <span><strong>River Ythan Basin</strong> - Flows east through agricultural land</span>
                 </div>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="ugie" tabindex="0" role="button" aria-label="Select River Ugie Basin">
                     <div class="legend-color" style="background: rgba(155, 89, 182, 0.3); border-color: #9b59b6;"></div>
                     <span><strong>River Ugie Basin</strong> - Northeast coastal drainage</span>
                 </div>
@@ -283,15 +295,15 @@
             
             <div class="legend-section">
                 <h3>Additional Basins</h3>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="deveron" tabindex="0" role="button" aria-label="Select River Deveron Basin">
                     <div class="legend-color" style="background: rgba(230, 126, 34, 0.3); border-color: #e67e22;"></div>
                     <span><strong>River Deveron Basin</strong> - Northwest drainage to Moray Firth</span>
                 </div>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="spey" tabindex="0" role="button" aria-label="Select Spey Basin">
                     <div class="legend-color" style="background: rgba(241, 196, 15, 0.3); border-color: #f1c40f;"></div>
                     <span><strong>Spey Basin (partial)</strong> - Western edge watershed</span>
                 </div>
-                <div class="legend-item">
+                <div class="legend-item" data-watershed="coastal" tabindex="0" role="button" aria-label="Select Coastal Streams">
                     <div class="legend-color" style="background: rgba(149, 165, 166, 0.3); border-color: #95a5a6;"></div>
                     <span><strong>Coastal Streams</strong> - Small direct-to-sea drainage</span>
                 </div>
@@ -439,13 +451,28 @@
             document.querySelectorAll('.btn')[2].classList.add('active'); // Both button
         }
         
-        // Add event listeners to watersheds
+        // Add event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            const watersheds = document.querySelectorAll('.watershed');
-            watersheds.forEach(watershed => {
-                watershed.addEventListener('click', function() {
-                    const watershedType = this.getAttribute('data-watershed');
+            const interactiveElements = document.querySelectorAll('.watershed, .legend-item');
+
+            const handleSelection = (element) => {
+                const watershedType = element.getAttribute('data-watershed');
+                if (watershedType) {
                     showWatershedInfo(watershedType);
+                    // Scroll to info panel on small screens
+                    if (window.innerWidth < 768) {
+                        document.querySelector('.info-panel').scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            };
+
+            interactiveElements.forEach(el => {
+                el.addEventListener('click', () => handleSelection(el));
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelection(el);
+                    }
                 });
             });
             
