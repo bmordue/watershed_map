@@ -64,11 +64,24 @@
             cursor: pointer;
         }
         
-        .watershed:hover {
+        .watershed:hover, .watershed:focus-visible {
             opacity: 1;
             transform: scale(1.02);
             z-index: 10;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            outline: 3px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        .watershed.active {
+            opacity: 1;
+            border-width: 4px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid #e74c3c;
+            outline-offset: 2px;
         }
         
         .watershed-label {
@@ -217,37 +230,37 @@
         <div class="map-container">
             <div id="map">
                 <!-- River Dee Watershed -->
-                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee">
+                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee" tabindex="0" role="button" aria-label="River Dee Basin watershed">
                     <div class="watershed-label" style="left: 50%; top: 30%; color: #c0392b;">River Dee Basin</div>
                 </div>
                 
                 <!-- River Don Watershed -->
-                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don">
+                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don" tabindex="0" role="button" aria-label="River Don Basin watershed">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #2980b9;">River Don Basin</div>
                 </div>
                 
                 <!-- River Ythan Watershed -->
-                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan">
+                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan" tabindex="0" role="button" aria-label="River Ythan Basin watershed">
                     <div class="watershed-label" style="left: 50%; top: 60%; color: #27ae60;">River Ythan Basin</div>
                 </div>
                 
                 <!-- River Ugie Watershed -->
-                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie">
+                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie" tabindex="0" role="button" aria-label="River Ugie Basin watershed">
                     <div class="watershed-label" style="left: 50%; top: 70%; color: #8e44ad;">River Ugie Basin</div>
                 </div>
                 
                 <!-- River Deveron Watershed -->
-                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron">
+                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron" tabindex="0" role="button" aria-label="River Deveron Basin watershed">
                     <div class="watershed-label" style="left: 60%; top: 70%; color: #d35400;">River Deveron Basin</div>
                 </div>
                 
                 <!-- River Spey Watershed (partial) -->
-                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey">
+                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey" tabindex="0" role="button" aria-label="Spey Basin (partial) watershed">
                     <div class="watershed-label" style="left: 70%; top: 50%; color: #f39c12;">Spey Basin (partial)</div>
                 </div>
                 
                 <!-- Coastal Watersheds -->
-                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal">
+                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal" tabindex="0" role="button" aria-label="Coastal Streams watershed">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #7f8c8d;">Coastal Streams</div>
                 </div>
                 
@@ -388,6 +401,13 @@
             // Hide general info
             document.getElementById('general-info').style.display = 'none';
             
+            // Update active state on map
+            document.querySelectorAll('.watershed').forEach(w => w.classList.remove('active'));
+            const selectedWatershed = document.querySelector(`.watershed[data-watershed="${watershed}"]`);
+            if (selectedWatershed) {
+                selectedWatershed.classList.add('active');
+            }
+
             // Show selected watershed info
             const targetInfo = document.getElementById(watershed + '-info');
             if (targetInfo) {
@@ -400,6 +420,9 @@
             const allInfo = document.querySelectorAll('.watershed-info');
             allInfo.forEach(info => info.style.display = 'none');
             
+            // Remove active state from all watersheds
+            document.querySelectorAll('.watershed').forEach(w => w.classList.remove('active'));
+
             // Show general info
             document.getElementById('general-info').style.display = 'block';
         }
@@ -446,6 +469,14 @@
                 watershed.addEventListener('click', function() {
                     const watershedType = this.getAttribute('data-watershed');
                     showWatershedInfo(watershedType);
+                });
+
+                watershed.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const watershedType = this.getAttribute('data-watershed');
+                        showWatershedInfo(watershedType);
+                    }
                 });
             });
             
