@@ -62,13 +62,24 @@
             opacity: 0.7;
             transition: all 0.3s ease;
             cursor: pointer;
+            outline: none;
         }
         
-        .watershed:hover {
+        .watershed:hover, .watershed:focus {
             opacity: 1;
             transform: scale(1.02);
             z-index: 10;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .watershed:focus-visible {
+            outline: 3px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid #2c3e50;
+            outline-offset: 2px;
         }
         
         .watershed-label {
@@ -404,13 +415,19 @@
             document.getElementById('general-info').style.display = 'block';
         }
         
-        function toggleView(viewType) {
+        function toggleView(viewType, element) {
             currentView = viewType;
             
             // Update button states
             const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+
+            const activeBtn = element || event.target;
+            activeBtn.classList.add('active');
+            activeBtn.setAttribute('aria-pressed', 'true');
             
             const watersheds = document.querySelectorAll('.watershed');
             const rivers = document.querySelectorAll('.river');
@@ -432,21 +449,45 @@
         }
         
         function resetView() {
-            toggleView('both');
+            const bothBtn = document.querySelectorAll('.btn')[2];
+            toggleView('both', bothBtn);
             resetInfo();
-            // Update active button
-            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.btn')[2].classList.add('active'); // Both button
         }
         
         // Add event listeners to watersheds
         document.addEventListener('DOMContentLoaded', function() {
             const watersheds = document.querySelectorAll('.watershed');
             watersheds.forEach(watershed => {
-                watershed.addEventListener('click', function() {
-                    const watershedType = this.getAttribute('data-watershed');
+                // Make interactive
+                watershed.setAttribute('role', 'button');
+                watershed.setAttribute('tabindex', '0');
+                const label = watershed.querySelector('.watershed-label').textContent;
+                watershed.setAttribute('aria-label', 'View information for ' + label);
+
+                const handleActivation = function() {
+                    const watershedType = watershed.getAttribute('data-watershed');
                     showWatershedInfo(watershedType);
+                };
+
+                watershed.addEventListener('click', handleActivation);
+                watershed.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleActivation();
+                    }
                 });
+            });
+
+            // Set initial ARIA states for buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                btn.setAttribute('aria-pressed', index === 2 ? 'true' : 'false');
+                // Ensure toggleView works with keyboard by passing the element
+                const originalOnClick = btn.getAttribute('onclick');
+                if (originalOnClick && originalOnClick.includes('toggleView')) {
+                    const view = originalOnClick.match(/'([^']+)'/)[1];
+                    btn.onclick = function(e) { toggleView(view, btn); };
+                }
             });
             
             // Click outside to reset
