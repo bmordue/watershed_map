@@ -1,0 +1,3 @@
+## 2025-05-14 - Interactive Map Accessibility
+**Learning:** Digital interactive maps often use non-semantic elements like `div` for interactive zones, making them invisible to screen readers and unreachable via keyboard. Adding standard ARIA roles (`role="button"`), accessible names (`aria-label`), and manageable tab indices (`tabindex="0"`) is critical for parity with the visual experience. High-visibility focus indicators (e.g., gold outline with offset) are essential when elements overlap varied background colors.
+**Action:** Always audit interactive visualizations for keyboard support and provide explicit focus styles that contrast with all possible element states.
