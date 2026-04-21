@@ -1,0 +1,3 @@
+## 2025-05-15 - Enhancing Interactive Map Accessibility
+**Learning:** Interactive geospatial elements (like SVG or DIV-based watershed regions) are often invisible to keyboard and screen reader users if they lack standard ARIA roles and tab indices. Furthermore, relying on global `event.target` for UI state management in toggle functions can cause inconsistencies when states are triggered programmatically or via keyboard.
+**Action:** Augment interactive map regions with `role="button"`, `tabindex="0"`, and explicit `keydown` listeners. Drive UI state changes (like active button highlighting) using explicit parameters or state mappings rather than `event.target` to ensure robust behavior across all interaction methods.
