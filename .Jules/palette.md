@@ -1,0 +1,3 @@
+## 2026-02-13 - Enhancing Accessibility for Custom Map Elements
+**Learning:** Custom interactive elements like `div` or `svg` representing map regions must have explicit keyboard support (tabindex, ARIA roles, and keydown listeners) and high-visibility focus indicators (using `:focus-visible` and `z-index`) to be accessible. Relying on global `event.target` in state-toggling functions can lead to inconsistent UI states when triggered programmatically or via keyboard.
+**Action:** Always use `tabindex="0"` and `role="button"` for custom interactive elements, and refactor state-management functions to use parameters instead of the global `event` object to ensure reliable updates to both classes and ARIA attributes.
