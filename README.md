@@ -39,27 +39,10 @@ cd watershed_map
 # Enter development environment (with Nix)
 nix-shell
 
-# Verify installation
-grass --version
-python3 -c "import geopandas; print('Ready!')"
-```
-
 ### Running the Pipeline
 
 ```bash
-# Setup GRASS location
-./scripts/setup_environment.sh
-
-# Download data (requires internet)
-./scripts/acquire_data.sh
-
-# Run complete pipeline
 ./scripts/complete_pipeline.sh
-
-# Or run individual stages
-./scripts/process_dem.sh           # DEM processing
-python3 scripts/process_watersheds.py  # Statistics
-./scripts/create_map_gmt.sh        # Map creation
 ```
 
 ### Using Custom Configuration

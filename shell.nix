@@ -15,7 +15,7 @@ pkgs.mkShell {
     python3Packages.pip
     
     # Essential Python Geospatial Packages (used in scripts)
-    python3Packages.geopandas
+    python313Packages.geopandas
     python3Packages.rasterio
     python3Packages.shapely
     python3Packages.fiona
@@ -27,6 +27,7 @@ pkgs.mkShell {
     # Data Acquisition Tools
     wget
     osmium-tool
+    yq
     
     # Required system libraries (dependencies)
     proj
