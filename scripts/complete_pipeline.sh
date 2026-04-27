@@ -35,10 +35,10 @@ if [ -f "../output/metadata.txt" ]; then
 else
   echo "Creating metadata file..."
   # Load configuration values for metadata
-  DEM_SOURCE=$(yq '.data_sources.dem.source' config/default.yaml)
-  DEM_RESOLUTION=$(yq '.data_sources.dem.resolution' config/default.yaml)
-  PROJECT_NAME=$(yq '.project.name' config/default.yaml)
-  COORD_SYSTEM=$(yq '.project.coordinate_system' config/default.yaml)
+  DEM_SOURCE=$(yq '.data_sources.dem.source' $PROJECT_ROOT/config/default.yaml)
+  DEM_RESOLUTION=$(yq '.data_sources.dem.resolution' $PROJECT_ROOT/config/default.yaml)
+  PROJECT_NAME=$(yq '.project.name' $PROJECT_ROOT/config/default.yaml)
+  COORD_SYSTEM=$(yq '.project.coordinate_system' $PROJECT_ROOT/config/default.yaml)
   
   cat > ../output/metadata.txt << EOF
 $PROJECT_NAME
