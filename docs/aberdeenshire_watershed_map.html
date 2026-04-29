@@ -70,6 +70,13 @@
             z-index: 10;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+
+        .watershed:focus-visible {
+            outline: 4px solid #f1c40f;
+            outline-offset: 2px;
+            opacity: 1;
+            z-index: 20;
+        }
         
         .watershed-label {
             position: absolute;
@@ -187,6 +194,11 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
+
+        .btn:focus-visible {
+            outline: 3px solid #f1c40f;
+            outline-offset: 2px;
+        }
         
         .btn.active {
             background: #e74c3c;
@@ -208,46 +220,46 @@
         <p class="subtitle">Major River Basins and Drainage Systems</p>
         
         <div class="controls">
-            <button class="btn" onclick="toggleView('watersheds')">Watersheds</button>
-            <button class="btn" onclick="toggleView('rivers')">Rivers</button>
-            <button class="btn active" onclick="toggleView('both')">Both</button>
+            <button class="btn" onclick="toggleView('watersheds', this)" aria-pressed="false">Watersheds</button>
+            <button class="btn" onclick="toggleView('rivers', this)" aria-pressed="false">Rivers</button>
+            <button class="btn active" onclick="toggleView('both', this)" aria-pressed="true">Both</button>
             <button class="btn" onclick="resetView()">Reset View</button>
         </div>
         
         <div class="map-container">
             <div id="map">
                 <!-- River Dee Watershed -->
-                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee">
+                <div class="watershed dee" style="left: 15%; top: 45%; width: 40%; height: 35%;" data-watershed="dee" role="button" tabindex="0" aria-label="River Dee Watershed">
                     <div class="watershed-label" style="left: 50%; top: 30%; color: #c0392b;">River Dee Basin</div>
                 </div>
                 
                 <!-- River Don Watershed -->
-                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don">
+                <div class="watershed don" style="left: 25%; top: 25%; width: 35%; height: 25%;" data-watershed="don" role="button" tabindex="0" aria-label="River Don Watershed">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #2980b9;">River Don Basin</div>
                 </div>
                 
                 <!-- River Ythan Watershed -->
-                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan">
+                <div class="watershed ythan" style="left: 45%; top: 15%; width: 25%; height: 30%;" data-watershed="ythan" role="button" tabindex="0" aria-label="River Ythan Watershed">
                     <div class="watershed-label" style="left: 50%; top: 60%; color: #27ae60;">River Ythan Basin</div>
                 </div>
                 
                 <!-- River Ugie Watershed -->
-                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie">
+                <div class="watershed ugie" style="left: 65%; top: 5%; width: 30%; height: 25%;" data-watershed="ugie" role="button" tabindex="0" aria-label="River Ugie Watershed">
                     <div class="watershed-label" style="left: 50%; top: 70%; color: #8e44ad;">River Ugie Basin</div>
                 </div>
                 
                 <!-- River Deveron Watershed -->
-                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron">
+                <div class="watershed deveron" style="left: 5%; top: 5%; width: 45%; height: 25%;" data-watershed="deveron" role="button" tabindex="0" aria-label="River Deveron Watershed">
                     <div class="watershed-label" style="left: 60%; top: 70%; color: #d35400;">River Deveron Basin</div>
                 </div>
                 
                 <!-- River Spey Watershed (partial) -->
-                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey">
+                <div class="watershed spey" style="left: 5%; top: 30%; width: 25%; height: 20%;" data-watershed="spey" role="button" tabindex="0" aria-label="River Spey Watershed (partial)">
                     <div class="watershed-label" style="left: 70%; top: 50%; color: #f39c12;">Spey Basin (partial)</div>
                 </div>
                 
                 <!-- Coastal Watersheds -->
-                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal">
+                <div class="watershed coastal" style="left: 70%; top: 30%; width: 25%; height: 50%;" data-watershed="coastal" role="button" tabindex="0" aria-label="Coastal Watersheds">
                     <div class="watershed-label" style="left: 50%; top: 50%; color: #7f8c8d;">Coastal Streams</div>
                 </div>
                 
@@ -404,13 +416,24 @@
             document.getElementById('general-info').style.display = 'block';
         }
         
-        function toggleView(viewType) {
+        function toggleView(viewType, element) {
             currentView = viewType;
             
             // Update button states
             const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.hasAttribute('aria-pressed')) {
+                    btn.setAttribute('aria-pressed', 'false');
+                }
+            });
+
+            if (element) {
+                element.classList.add('active');
+                if (element.hasAttribute('aria-pressed')) {
+                    element.setAttribute('aria-pressed', 'true');
+                }
+            }
             
             const watersheds = document.querySelectorAll('.watershed');
             const rivers = document.querySelectorAll('.river');
@@ -432,20 +455,27 @@
         }
         
         function resetView() {
-            toggleView('both');
+            const bothBtn = document.querySelectorAll('.btn')[2];
+            toggleView('both', bothBtn);
             resetInfo();
-            // Update active button
-            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.btn')[2].classList.add('active'); // Both button
         }
         
         // Add event listeners to watersheds
         document.addEventListener('DOMContentLoaded', function() {
             const watersheds = document.querySelectorAll('.watershed');
             watersheds.forEach(watershed => {
-                watershed.addEventListener('click', function() {
-                    const watershedType = this.getAttribute('data-watershed');
+                const handleSelection = function() {
+                    const watershedType = watershed.getAttribute('data-watershed');
                     showWatershedInfo(watershedType);
+                };
+
+                watershed.addEventListener('click', handleSelection);
+
+                watershed.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelection();
+                    }
                 });
             });
             

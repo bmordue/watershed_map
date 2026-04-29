@@ -1,0 +1,3 @@
+## 2025-05-14 - Interactive Map Accessibility
+**Learning:** Interactive regions in geographic maps often use non-semantic elements like `div` or `path`. These are invisible to keyboard and screen reader users unless explicitly given a `role="button"`, `tabindex="0"`, and `aria-label`. Unlike native buttons, these elements do not automatically trigger "click" events on "Enter" or "Space" keypresses, necessitating manual `keydown` event listeners.
+**Action:** When making custom graphics interactive, always implement the "Accessibility Trifecta": Semantic Roles/Labels, Tabindex for Focus, and Keyboard Event Listeners for activation.
